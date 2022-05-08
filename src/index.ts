@@ -74,7 +74,7 @@ app.post('/bloggers', (req: Request, res: Response) => {
     return res.status(201).send(newBlogger)
 })
 
-app.delete('/blogers/:id', (req: Request, res: Response) => {
+app.delete('/bloggers/:id', (req: Request, res: Response) => {
     const id = +req.params.id;
     const finded = bloggers.find(b => b.id === id);
     if (finded) {
