@@ -51,7 +51,7 @@ app.post('/bloggers', (req: Request, res: Response) => {
         });
     }
 
-    if (typeof youtubeUrl !== 'string' || youtubeUrl.trim().length > 100 || youtubeUrl.trim().length <= 0 || pattern.test(youtubeUrl)) {
+    if (typeof youtubeUrl !== 'string' || youtubeUrl.trim().length > 100 || youtubeUrl.trim().length <= 0 || !pattern.test(youtubeUrl)) {
         errors.push({
             "message": "bad request",
             "field": "youtubeUrl"
@@ -106,7 +106,7 @@ app.put('/bloggers/:id', (req: Request, res: Response) => {
         });
     }
 
-    if (typeof youtubeUrl !== 'string' || youtubeUrl.trim().length > 100 || youtubeUrl.trim().length <= 0 ||  pattern.test(youtubeUrl)) {
+    if (typeof youtubeUrl !== 'string' || youtubeUrl.trim().length > 100 || youtubeUrl.trim().length <= 0 ||  !pattern.test(youtubeUrl)) {
         errors.push({
             "message": "bad request",
             "field": "youtubeUrl"
