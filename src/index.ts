@@ -70,6 +70,9 @@ app.post('/bloggers', (req: Request, res: Response) => {
     const youtubeUrl = req.body.youtubeUrl;
     const errors = [];
 
+    console.log('post bloggers')
+    console.log(req.body);
+
 
     if (typeof name !== 'string' || name.trim().length > 15 || name.trim().length <= 0) {
         errors.push({
@@ -98,6 +101,11 @@ app.post('/bloggers', (req: Request, res: Response) => {
         youtubeUrl,
     }
     bloggers.push(newBlogger)
+
+
+    console.log('new blogger')
+    console.log(newBlogger)
+
     return res.status(201).send(newBlogger)
 })
 
@@ -186,6 +194,8 @@ app.post('/posts', (req: Request, res: Response) => {
     const content = req.body.content;
     const bloggerId = req.body.bloggerId;
     const errors = [];
+    console.log('post posts')
+    console.log(req.body);
 
 
     if (typeof title !== 'string' || title.trim().length > 15 || title.trim().length <= 0) {
@@ -232,6 +242,10 @@ app.post('/posts', (req: Request, res: Response) => {
         bloggerId,
         bloggerName: "string"
     }
+
+    console.log('new posts')
+    console.log(newPost)
+
     posts.push(newPost)
     return res.status(201).send(newPost)
 })
@@ -255,6 +269,10 @@ app.put('/posts/:id', (req: Request, res: Response) => {
     const content = req.body.content;
     const bloggerId = req.body.bloggerId;
     const errors = [];
+
+    console.log('put posts')
+    console.log(req.params.id);
+    console.log(req.body);
 
     const finded = posts.find(b => b.id === id);
 
