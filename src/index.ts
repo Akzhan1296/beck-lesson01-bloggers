@@ -13,16 +13,16 @@ app.use(bodyParser.json());
 // blogers
 
 let bloggers = [
-    { id: 1, name: 'About JS - 01', youtubeUrl: 'it-incubator.eu' },
+    // { id: 1, name: 'About JS - 01', youtubeUrl: 'it-incubator.eu' },
 ]
 
 let posts = [
-    {id: 0,
-        title: "string",
-        shortDescription: "string",
-        content: "string",
-        bloggerId: 0,
-        bloggerName: "string"}
+    // {id: 0,
+    //     title: "string",
+    //     shortDescription: "string",
+    //     content: "string",
+    //     bloggerId: 0,
+    //     bloggerName: "string"}
 ]
 
 
@@ -145,6 +145,7 @@ app.put('/bloggers/:id', (req: Request, res: Response) => {
 })
 
 
+//posts
 
 app.get('/posts', (req, res) => {
     res.status(200).send(posts);
