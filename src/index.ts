@@ -12,11 +12,27 @@ app.use(bodyParser.json());
 
 // blogers
 
-let bloggers = [
+type BloggerItem = {
+    id: number
+    name: string
+    youtubeUrl: string
+}
+
+let bloggers: BloggerItem[] = [
     // { id: 1, name: 'About JS - 01', youtubeUrl: 'it-incubator.eu' },
 ]
 
-let posts = [
+type PostItem = {
+    id: number,
+        title: string,
+        shortDescription: string,
+        content: string,
+        bloggerId: number,
+        bloggerName: string
+
+}
+
+let posts: PostItem[] = [
     // {id: 0,
     //     title: "string",
     //     shortDescription: "string",
