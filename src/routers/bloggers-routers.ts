@@ -1,24 +1,19 @@
 import {Request, Response, Router} from "express";
-
-type BloggerItem = {
-    id: number
-    name: string
-    youtubeUrl: string
-}
-
-export let bloggers: BloggerItem[] = []
-const pattern = RegExp('^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$');
+import {bloggersRepository} from "../repositories/bloggers-repository";
 
 export const bloggersRouter = Router({})
 
+const pattern = RegExp('^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$');
+
+
 bloggersRouter.get('/', (req, res) => {
-    res.status(200).send(bloggers);
+    res.status(200).send(bloggersRepository.getBloggers());
 });
 
 bloggersRouter.get('/:id', (req, res) => {
     const id = +req.params.id;
 
-    let findedBlogger = bloggers.find(b => b.id === id)
+    let findedBlogger = bloggersRepository.getBloggerById(id)
 
     if (findedBlogger) {
         return res.status(200).send(findedBlogger);
@@ -54,12 +49,7 @@ bloggersRouter.post('/', (req: Request, res: Response) => {
         });
     }
 
-    const newBlogger = {
-        id: +(new Date()),
-        name,
-        youtubeUrl,
-    }
-    bloggers.push(newBlogger)
+    const newBlogger = bloggersRepository.createBlogger(name, youtubeUrl)
 
     return res.status(201).send(newBlogger)
 })
@@ -70,7 +60,7 @@ bloggersRouter.put('/:id', (req: Request, res: Response) => {
     const youtubeUrl = req.body.youtubeUrl;
     const errors = [];
 
-    const finded = bloggers.find(b => b.id === id);
+    const finded = bloggersRepository.getBloggerById(id)
 
     if (!finded) {
         return res.status(404).send();
@@ -99,27 +89,21 @@ bloggersRouter.put('/:id', (req: Request, res: Response) => {
     }
 
     if (finded) {
-        const updatedBloger = {
-            id,
-            name,
-            youtubeUrl,
-        }
-
-        bloggers = [...bloggers.filter(b => b.id !== id), updatedBloger];
-        return res.status(204).send(bloggers);
-
+        const updatedBloger = bloggersRepository.updateBlogger(id, name, youtubeUrl)
+        return res.status(204).send();
     }
 })
 
 bloggersRouter.delete('/:id', (req: Request, res: Response) => {
     const id = +req.params.id;
-    const finded = bloggers.find(b => b.id === id);
-    if (finded) {
-        let newBlogger = bloggers.filter(b => b.id !== id);
-        bloggers = newBlogger;
-        return res.status(204).send(newBlogger);
-    } else {
+    const finded = bloggersRepository.getBloggerById(id)
+
+    if(!finded){
         return res.status(404).send();
     }
+
+    const filteredBloggers = bloggersRepository.deleteBlogger(id)
+    return res.status(204).send();
+
 })
 

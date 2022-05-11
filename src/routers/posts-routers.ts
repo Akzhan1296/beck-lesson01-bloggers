@@ -1,27 +1,18 @@
 import {Request, Response, Router} from "express";
-import {bloggers} from "./bloggers-routers";
+import {bloggers} from "../repositories/bloggers-repository";
+import { postsRepository } from "../repositories/posts-repository";
 
-type PostItem = {
-    id: number,
-    title: string,
-    shortDescription: string,
-    content: string,
-    bloggerId: number,
-    bloggerName: string
-}
 
-let posts: PostItem[] = []
 
 export const postsRouter = Router({});
 
 postsRouter.get('/', (req, res) => {
-    res.status(200).send(posts);
+    res.status(200).send(postsRepository.getPosts());
 });
 
 postsRouter.get('/:id', (req, res) => {
     const id = +req.params.id;
-
-    let findedPost = posts.find(b => b.id === id)
+    let findedPost = postsRepository.getPostById(id);
 
     if (findedPost) {
         return res.status(200).send(findedPost);
@@ -83,16 +74,8 @@ postsRouter.post('/', (req: Request, res: Response) => {
         });
     }
 
-    const newPost = {
-        id: +(new Date()),
-        title,
-        shortDescription,
-        content,
-        bloggerId,
-        bloggerName: "string"
-    }
+    const newPost = postsRepository.createPost(title, shortDescription, content, bloggerId);
 
-    posts.push(newPost)
     return res.status(201).send(newPost)
 })
 
@@ -104,7 +87,7 @@ postsRouter.put('/:id', (req: Request, res: Response) => {
     const bloggerId = req.body.bloggerId;
     const errors = [];
 
-    const finded = posts.find(b => b.id === id);
+    const finded = postsRepository.getPostById(id);
 
     if (!finded) {
         return res.status(404).send();
@@ -155,31 +138,19 @@ postsRouter.put('/:id', (req: Request, res: Response) => {
         });
     }
 
-
     if (finded) {
-        const updatedPost = {
-            id,
-            title,
-            shortDescription,
-            content,
-            bloggerId,
-            bloggerName: "string"
-        }
-
-        posts = [...posts.filter(b => b.id !== id), updatedPost];
+        const updatedPost = postsRepository.updatePost(id, title, shortDescription, content, bloggerId);
         return res.status(204).send();
-
     }
 })
 
 postsRouter.delete('/:id', (req: Request, res: Response) => {
     const id = +req.params.id;
-    const finded = posts.find(b => b.id === id);
-    if (finded) {
-        let newPosts = posts.filter(b => b.id !== id);
-        posts = newPosts;
-        return res.status(204).send(posts);
-    } else {
+    const filteredPosts = postsRepository.deletePost(id);
+
+    if(!filteredPosts){
         return res.status(404).send();
     }
+    return res.status(204).send();
+
 })
