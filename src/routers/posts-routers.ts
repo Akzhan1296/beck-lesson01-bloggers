@@ -40,7 +40,7 @@ postsRouter.post('/', (req: Request, res: Response) => {
 
 
     if(!bloggers.find((b) => b.id === bloggerId)){
-        return res.status(404).send()
+        return res.status(400).send()
     }
 
     if (typeof title !== 'string' || title.trim().length > 15 || title.trim().length <= 0) {
@@ -108,7 +108,7 @@ postsRouter.put('/:id', (req: Request, res: Response) => {
     };
 
     if(!bloggers.find((b) => b.id === bloggerId)){
-        return res.status(404).send()
+        return res.status(400).send()
     }
 
     if (typeof title !== 'string' || title.trim().length > 15 || title.trim().length <= 0) {
