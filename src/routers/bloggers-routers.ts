@@ -6,7 +6,7 @@ type BloggerItem = {
     youtubeUrl: string
 }
 
-let bloggers: BloggerItem[] = []
+export let bloggers: BloggerItem[] = []
 const pattern = RegExp('^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$');
 
 export const bloggersRouter = Router({})

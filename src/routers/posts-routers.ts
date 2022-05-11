@@ -1,4 +1,5 @@
 import {Request, Response, Router} from "express";
+import {bloggers} from "./bloggers-routers";
 
 type PostItem = {
     id: number,
@@ -36,6 +37,11 @@ postsRouter.post('/', (req: Request, res: Response) => {
     const content = req.body.content;
     const bloggerId = req.body.bloggerId;
     const errors = [];
+
+
+    if(!bloggers.find((b) => b.id === bloggerId)){
+        return res.status(404).send()
+    }
 
     if (typeof title !== 'string' || title.trim().length > 15 || title.trim().length <= 0) {
         errors.push({
@@ -101,6 +107,9 @@ postsRouter.put('/:id', (req: Request, res: Response) => {
 
     };
 
+    if(!bloggers.find((b) => b.id === bloggerId)){
+        return res.status(404).send()
+    }
 
     if (typeof title !== 'string' || title.trim().length > 15 || title.trim().length <= 0) {
         errors.push({
@@ -141,7 +150,7 @@ postsRouter.put('/:id', (req: Request, res: Response) => {
 
     if (finded) {
         const updatedPost = {
-            id: +(new Date()),
+            id,
             title,
             shortDescription,
             content,
@@ -150,7 +159,7 @@ postsRouter.put('/:id', (req: Request, res: Response) => {
         }
 
         posts = [...posts.filter(b => b.id !== id), updatedPost];
-        return res.status(204).send(posts);
+        return res.status(204).send();
 
     }
 })
