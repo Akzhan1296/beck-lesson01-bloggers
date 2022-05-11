@@ -41,7 +41,10 @@ postsRouter.post('/', (req: Request, res: Response) => {
 
     if(!bloggers.find((b) => b.id === bloggerId)){
         errors.push({message: "message", field: "bloggerId"})
-        return res.status(400).send(errors);
+        return res.status(400).send({
+            "errorsMessages": errors,
+            "resultCode": 1
+        });
     }
 
     if (typeof title !== 'string' || title.trim().length > 15 || title.trim().length <= 0) {
@@ -110,7 +113,10 @@ postsRouter.put('/:id', (req: Request, res: Response) => {
 
     if(!bloggers.find((b) => b.id === bloggerId)){
         errors.push({message: "message", field: "bloggerId"})
-        return res.status(400).send(errors);
+        return res.status(400).send({
+            "errorsMessages": errors,
+            "resultCode": 1
+        });
     }
 
     if (typeof title !== 'string' || title.trim().length > 15 || title.trim().length <= 0) {
