@@ -32,8 +32,11 @@ export const hasBloggerMiddleware = (req: Request, res: Response, next: NextFunc
 
     if (!bloggers.find((b) => b.id === bloggerId)) {
         res.status(400).json({
-            message: "not found blogger",
-            field: "bloggerId"
+            errorsMessages : [{
+                message: "not found blogger",
+                field: "bloggerId"
+            }],
+            resultCode: 1,
         })
         return;
     }
