@@ -3,12 +3,12 @@ import { NextFunction, Request, Response } from "express";
 import { bloggersRepository } from "../repositories/bloggers-repository";
 
 export const inputValidators = {
-    titleValidate: body('title').notEmpty().trim().isLength({ max: 15 }),
-    shortDescription: body('shortDescription').notEmpty().trim().isLength({ max: 100 }),
-    content: body('title').notEmpty().trim().isLength({ max: 1000 }),
-    bloggerId: body('bloggerId').notEmpty().isNumeric(),
-    name: body('name').notEmpty().trim().isLength({ max: 15 }),
-    youtubeUrl: body('youtubeUrl').notEmpty().trim().isLength({ max: 100 }).matches('^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$'),
+    titleValidate: body('title').trim().notEmpty().isLength({ max: 15 }),
+    shortDescription: body('shortDescription').trim().notEmpty().isLength({ max: 100 }),
+    content: body('title').trim().notEmpty().isLength({ max: 1000 }),
+    bloggerId: body('bloggerId').trim().notEmpty().isNumeric(),
+    name: body('name').trim().notEmpty().isLength({ max: 15 }),
+    youtubeUrl: body('youtubeUrl').trim().notEmpty().isLength({ max: 100 }).matches('^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$'),
 
 };
 
