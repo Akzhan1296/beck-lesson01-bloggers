@@ -1,5 +1,8 @@
 import {Request, Response, Router} from "express";
 import {bloggersRepository} from "../repositories/bloggers-repository";
+import {inputValidators, sumErrorsMiddleware} from '../middlewares/input-validator-middleware'
+import {authMiddleWare} from "../middlewares/auth-middleware";
+import {body} from "express-validator";
 
 export const bloggersRouter = Router({})
 
@@ -13,96 +16,62 @@ bloggersRouter.get('/', (req, res) => {
 bloggersRouter.get('/:id', (req, res) => {
     const id = +req.params.id;
 
-    let findedBlogger = bloggersRepository.getBloggerById(id)
+    let foundBlogger = bloggersRepository.getBloggerById(id)
 
-    if (findedBlogger) {
-        return res.status(200).send(findedBlogger);
+    if (foundBlogger) {
+        return res.status(200).send(foundBlogger);
     } else {
         return res.status(404).send();
     }
 })
 
-bloggersRouter.post('/', (req: Request, res: Response) => {
+bloggersRouter.post('/',
+    authMiddleWare,
+    inputValidators.name,
+    inputValidators.youtubeUrl,
+    sumErrorsMiddleware,
+    (req: Request, res: Response) => {
 
     const name = req.body.name;
     const youtubeUrl = req.body.youtubeUrl;
-    const errors = [];
-
-    if (typeof name !== 'string' || name.trim().length > 15 || name.trim().length <= 0) {
-        errors.push({
-            "message": "bad request",
-            "field": "name"
-        });
-    }
-
-    if (typeof youtubeUrl !== 'string' || youtubeUrl.trim().length > 100 || youtubeUrl.trim().length <= 0 || !pattern.test(youtubeUrl)) {
-        errors.push({
-            "message": "bad request",
-            "field": "youtubeUrl"
-        });
-    }
-
-    if (errors.length > 0) {
-        return res.status(400).send({
-            "errorsMessages": errors,
-            "resultCode": 1
-        });
-    }
 
     const newBlogger = bloggersRepository.createBlogger(name, youtubeUrl)
-
     return res.status(201).send(newBlogger)
 })
 
-bloggersRouter.put('/:id', (req: Request, res: Response) => {
+bloggersRouter.put('/:id',
+    authMiddleWare,
+    inputValidators.name,
+    inputValidators.youtubeUrl,    
+    sumErrorsMiddleware,
+    (req: Request, res: Response) => {
     const id = +req.params.id;
     const name = req.body.name;
     const youtubeUrl = req.body.youtubeUrl;
-    const errors = [];
 
-    const finded = bloggersRepository.getBloggerById(id)
+    const found = bloggersRepository.getBloggerById(id)
 
-    if (!finded) {
+    if (!found) {
         return res.status(404).send();
-
     };
 
-    if (typeof name !== 'string' || name.trim().length > 15 || name.trim().length <= 0) {
-        errors.push({
-            "message": "bad request",
-            "field": "name"
-        });
-    }
-
-    if (typeof youtubeUrl !== 'string' || youtubeUrl.trim().length > 100 || youtubeUrl.trim().length <= 0 ||  !pattern.test(youtubeUrl)) {
-        errors.push({
-            "message": "bad request",
-            "field": "youtubeUrl"
-        });
-    }
-
-    if (errors.length > 0) {
-        return res.status(400).send({
-            "errorsMessages": errors,
-            "resultCode": 1
-        });
-    }
-
-    if (finded) {
-        const updatedBloger = bloggersRepository.updateBlogger(id, name, youtubeUrl)
+    if (found) {
+        bloggersRepository.updateBlogger(id, name, youtubeUrl)
         return res.status(204).send();
     }
 })
 
-bloggersRouter.delete('/:id', (req: Request, res: Response) => {
+bloggersRouter.delete('/:id',
+    authMiddleWare,
+    (req: Request, res: Response) => {
     const id = +req.params.id;
-    const finded = bloggersRepository.getBloggerById(id)
+    const found = bloggersRepository.getBloggerById(id)
 
-    if(!finded){
+    if(!found){
         return res.status(404).send();
     }
 
-    const filteredBloggers = bloggersRepository.deleteBlogger(id)
+    bloggersRepository.deleteBlogger(id)
     return res.status(204).send();
 
 })

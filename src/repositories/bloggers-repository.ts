@@ -4,7 +4,11 @@ type BloggerItem = {
     youtubeUrl: string
 }
 
-export let bloggers: BloggerItem[] = []
+export let bloggers: BloggerItem[] = [{
+    id: 13,
+    name: '231',
+    youtubeUrl: 'https://www.youtube.com/watch?v=8sNkA53jAMU'
+}]
 
 export const bloggersRepository = {
     getBloggers: () => {
@@ -31,17 +35,17 @@ export const bloggersRepository = {
     },
     updateBlogger: (id: number, name: string, youtubeUrl: string) => {
 
-        const updatedBloger = {
+        const updatedBlogger = {
             id,
             name,
             youtubeUrl,
         }
-        bloggers = [...bloggers.filter(b => b.id !== id), updatedBloger];
-        return updatedBloger;
+        bloggers = [...bloggers.filter(b => b.id !== id), updatedBlogger];
+        return updatedBlogger;
     },
     deleteBlogger: (id: number) => {
-        const finded = bloggers.find(b => b.id === id);
-        if (finded) {
+        const found = bloggers.find(b => b.id === id);
+        if (found) {
             let newBlogger = bloggers.filter(b => b.id !== id);
             bloggers = newBlogger;
             return newBlogger

@@ -7,17 +7,24 @@ type PostItem = {
     bloggerName: string
 }
 
-let posts: PostItem[] = []
+let posts: PostItem[] = [{
+    id: +(new Date()),
+    title: '',
+    shortDescription: 'dasda',
+    content: 'dsadsa',
+    bloggerId: 123,
+    bloggerName: "string"
+}]
 
 export const postsRepository = {
     getPosts: () => {
         return posts;
     },
     getPostById: (id: number) => {
-        let findedPost = posts.find(b => b.id === id)
+        let foundPost = posts.find(b => b.id === id)
 
-        if (findedPost) {
-            return findedPost
+        if (foundPost) {
+            return foundPost
         } else {
             return false;
         }
@@ -44,12 +51,11 @@ export const postsRepository = {
         bloggerName: "string"
     }
         posts = [...posts.filter(b => b.id !== id), updatedPost];
-    console.log(posts);
         return posts;
     },
     deletePost: (id: number) => {
-        const finded = posts.find(b => b.id === id);
-        if (finded) {
+        const found = posts.find(b => b.id === id);
+        if (found) {
             let filteredPosts = posts.filter(b => b.id !== id);
             posts = filteredPosts;
             return filteredPosts
