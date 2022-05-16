@@ -16,7 +16,7 @@ export const sumErrorsMiddleware = (req: Request, res: Response, next: NextFunct
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({
-            errorMessages: errors.array({onlyFirstError: true}).map(er => ({
+            errorsMessages: errors.array({onlyFirstError: true}).map(er => ({
                 errorsMessages: er.msg,
                 field: er.param
             })),
