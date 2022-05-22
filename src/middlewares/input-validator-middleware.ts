@@ -1,6 +1,7 @@
 import { body, validationResult } from 'express-validator'
 import { NextFunction, Request, Response } from "express";
-import { bloggersRepository } from "../repositories/bloggers-repository";
+import { bloggersRepository } from "../repositories/bloggers-db-repository";
+
 
 export const inputValidators = {
     titleValidate: body('title').trim().notEmpty().isLength({ max: 15 }),
@@ -8,7 +9,7 @@ export const inputValidators = {
     content: body('content').trim().notEmpty().isLength({ max: 1000 }),
     bloggerId: body('bloggerId').notEmpty().isNumeric(),
     name: body('name').trim().notEmpty().isLength({ max: 15 }),
-    youtubeUrl: body('youtubeUrl').trim().notEmpty().isLength({ max: 100 }).matches('^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$'),
+    youtubeUrl: body('youtubeUrl').trim().notEmpty().isLength({ max: 100 }).matches('^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$'),
 
 };
 
@@ -26,11 +27,11 @@ export const sumErrorsMiddleware = (req: Request, res: Response, next: NextFunct
     next();
 }
 
-export const hasBloggerMiddleware = (req: Request, res: Response, next: NextFunction) => {
+export const hasBloggerMiddleware = async(req: Request, res: Response, next: NextFunction) => {
     const bloggerId = req.body.bloggerId;
-    const bloggers = bloggersRepository.getBloggers();
+    const bloggers = await bloggersRepository.getBloggerById(bloggerId);
 
-    if (!bloggers.find((b) => b.id === bloggerId)) {
+    if (!bloggers) {
         res.status(400).json({
             errorsMessages : [{
                 message: "not found blogger",
