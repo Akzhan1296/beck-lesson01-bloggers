@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import { bloggersService, QueryType } from "../domain/bloggers-service";
-import { inputValidators, sumErrorsMiddleware } from '../middlewares/input-validator-middleware'
+import { postsService } from '../domain/posts-service';
+import { hasBloggerMiddleware, inputValidators, sumErrorsMiddleware } from '../middlewares/input-validator-middleware'
 import { authMiddleWare } from "../middlewares/auth-middleware";
 
 export const bloggersRouter = Router({})
@@ -26,6 +27,20 @@ bloggersRouter.get('/:id', async (req, res) => {
   }
 })
 
+bloggersRouter.get('/:bloggerId/posts', async (req, res) => {
+  const bloggerId = +req.params.bloggerId;
+  const pageNumber = req.query.pageNumber as QueryType;
+  const pageSize = req.query.pageSize as QueryType;
+  let foundBlogger = await bloggersService.getBloggerById(bloggerId)
+
+  if (foundBlogger) {
+    let posts = await postsService.getPostByBloggerId(bloggerId, pageNumber, pageSize);
+    return res.status(200).send(posts);
+  } else {
+    return res.status(404).send();
+  }
+})
+
 bloggersRouter.post('/',
   authMiddleWare,
   inputValidators.name,
@@ -38,6 +53,28 @@ bloggersRouter.post('/',
 
     const newBlogger = await bloggersService.createBlogger(name, youtubeUrl)
     return res.status(201).send(newBlogger)
+  })
+
+  bloggersRouter.post('/:bloggerId/posts',
+  authMiddleWare,
+  inputValidators.titleValidate,
+  inputValidators.content,
+  inputValidators.shortDescription,
+  sumErrorsMiddleware,
+  async (req: Request, res: Response) => {
+
+    const title = req.body.title;
+    const shortDescription = req.body.shortDescription;
+    const content = req.body.content;
+    const bloggerId = +req.params.bloggerId;
+
+    let foundBlogger = await bloggersService.getBloggerById(bloggerId)
+    if (foundBlogger) {
+      const newPost = await postsService.createPost(title, shortDescription, content, bloggerId);
+      return res.status(201).send(newPost);
+    } else {
+      return res.status(404).send();
+    }
   })
 
 bloggersRouter.put('/:id',

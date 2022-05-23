@@ -31,7 +31,7 @@ postsRouter.get('/:id', async (req, res) => {
 
 postsRouter.post('/',
     authMiddleWare,
-    // hasBloggerMiddleware,
+    hasBloggerMiddleware,
     inputValidators.titleValidate,
     inputValidators.content,
     inputValidators.bloggerId,
@@ -67,7 +67,6 @@ postsRouter.put('/:id',
         const isUpdated = await postsService.updatePost(id, title, shortDescription, content, bloggerId)
 
         if (isUpdated) {
-        //   const product = await postsService.getPostById(id);
           res.send(204);
         } else {
           res.send(404);

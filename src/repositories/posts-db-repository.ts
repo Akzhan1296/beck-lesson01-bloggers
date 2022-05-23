@@ -13,11 +13,20 @@ export const postsRepository = {
   getPosts: async (skip: number, limit: number):Promise<PostItem[]> => {
     return await postsCollection.find().skip(skip).limit(limit).toArray();
   },
-  getPostsCount: async() => {
-    return await postsCollection.count({});
+  getPostsCount: async(count: PostItem) => {
+    return await postsCollection.count(count);
   },
   getPostById: async (id: number): Promise<PostItem | null> => {
     let foundPost = await postsCollection.findOne({ id: id });
+
+    if (foundPost) {
+      return foundPost
+    } else {
+      return null;
+    }
+  },
+  getPostByBloggerId: async (id: number, skip: number, limit: number): Promise<PostItem | null> => {
+    let foundPost = await postsCollection.find({bloggerId: id}).skip(skip).limit(limit).toArray();
 
     if (foundPost) {
       return foundPost

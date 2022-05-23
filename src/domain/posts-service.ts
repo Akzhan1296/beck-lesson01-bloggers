@@ -13,11 +13,11 @@ export const postsService = {
       ps = Number(pageSize)
     }
 
-    const skip = (pn - 1)*ps;
+    const skip = (pn - 1) * ps;
 
     const posts = await postsRepository.getPosts(skip, ps);
-    const totalCount = await postsRepository.getPostsCount();    
-    const pagesCount = Math.ceil(totalCount/ps)
+    const totalCount = await postsRepository.getPostsCount({} as PostItem);
+    const pagesCount = Math.ceil(totalCount / ps);
 
     return {
       page: pn,
@@ -29,6 +29,30 @@ export const postsService = {
   },
   getPostById: async (id: number): Promise<PostItem | null> => {
     return postsRepository.getPostById(id);
+  },
+  getPostByBloggerId: async (id: number, pageNumber: QueryType, pageSize: QueryType) => {
+
+    let pn = 1;
+    let ps = 10;
+    if (pageNumber) {
+      pn = Number(pageNumber);
+    }
+    if (pageSize) {
+      ps = Number(pageSize)
+    }
+    const skip = (pn - 1) * ps;
+
+    const totalCount = await postsRepository.getPostsCount({ bloggerId: id } as PostItem);
+    const postsByBlogger = await postsRepository.getPostByBloggerId(id, skip, ps);
+    const pagesCount = Math.ceil(totalCount / ps);
+
+    return {
+      page: pn,
+      pageSize: ps,
+      totalCount,
+      pagesCount,
+      items: postsByBlogger,
+    }
   },
   createPost: async (title: string, shortDescription: string, content: string, bloggerId: number) => {
     const newPost = {
