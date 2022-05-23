@@ -1,4 +1,4 @@
-type PostItem = {
+export type PostItem = {
     id: number,
     title: string,
     shortDescription: string,
@@ -17,39 +17,23 @@ let posts: PostItem[] = [{
 }]
 
 export const postsRepository = {
-    getPosts: () => {
+    getPosts: async()=> {
         return posts;
     },
-    getPostById: (id: number) => {
+    getPostById: async (id: number) => {
         let foundPost = posts.find(b => b.id === id)
 
         if (foundPost) {
             return foundPost
         } else {
-            return false;
+            return null;
         }
     },
-    createPost: (title: string, shortDescription: string, content: string, bloggerId: number ) => {
-        const newPost = {
-            id: +(new Date()),
-            title,
-            shortDescription,
-            content,
-            bloggerId,
-            bloggerName: "string"
-        }
+    createPost: async(newPost: PostItem) => {
         posts.push(newPost)
         return newPost;
     },
-    updatePost: (id: number, title: string, shortDescription: string, content: string, bloggerId: number ) => {
-    const updatedPost = {
-        id,
-        title,
-        shortDescription,
-        content,
-        bloggerId,
-        bloggerName: "string"
-    }
+    updatePost: async (id: number, updatedPost: PostItem ) => {
         posts = [...posts.filter(b => b.id !== id), updatedPost];
         return posts;
     },

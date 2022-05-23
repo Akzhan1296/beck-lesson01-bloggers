@@ -7,8 +7,11 @@ export type BloggerItem = {
 }
 
 export const bloggersRepository = {
-  getBloggers: async (): Promise<BloggerItem[]> => {
-    return bloggersCollection.find().toArray();
+  getBloggers: async (skip: number, limit: number, filter: BloggerItem): Promise<BloggerItem[]> => {
+    return await bloggersCollection.find(filter).skip(skip).limit(limit).toArray();
+  },
+  getBloggersCount: async (st: string) => {
+    return await bloggersCollection.count({name: st});
   },
   getBloggerById: async (id: number): Promise<BloggerItem | null> => {
     let blogger = await bloggersCollection.findOne({ id: id });
@@ -23,7 +26,6 @@ export const bloggersRepository = {
     return newBlogger
   },
   updateBlogger: async (id: number, updatedBlogger: BloggerItem): Promise<boolean> => {
-
     const result = await bloggersCollection.updateOne({ id: id }, { $set: updatedBlogger });
     return result.matchedCount === 1
   },

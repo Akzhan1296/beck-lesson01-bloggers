@@ -15,13 +15,13 @@ import {checkContentTypeMiddleWare} from './middlewares/content-type-check-middl
 import {runDb} from './repositories/db'
 
 const app = express()
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
 
-app.use(blockIpMiddleWare);
-app.use(countRequestsMiddleWare);
+// app.use(blockIpMiddleWare);
+// app.use(countRequestsMiddleWare);
 //app.use(checkContentTypeMiddleWare('application/json'))
 
 app.use('/bloggers', bloggersRouter);

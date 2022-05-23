@@ -1,12 +1,16 @@
 import { Request, Response, Router } from "express";
-import { bloggersService } from "../domain/bloggers-service";
+import { bloggersService, QueryType } from "../domain/bloggers-service";
 import { inputValidators, sumErrorsMiddleware } from '../middlewares/input-validator-middleware'
 import { authMiddleWare } from "../middlewares/auth-middleware";
 
 export const bloggersRouter = Router({})
 
 bloggersRouter.get('/', async (req, res) => {
-  const bloggers = await bloggersService.getBloggers();
+  const pageNumber = req.query.pageNumber as QueryType;
+  const pageSize = req.query.pageSize as QueryType;
+  const searchNameTerm = req.query.searchNameTerm as QueryType
+
+  const bloggers = await bloggersService.getBloggers(pageNumber, pageSize, searchNameTerm);
   res.status(200).send(bloggers);
 });
 

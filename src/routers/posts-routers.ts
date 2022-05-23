@@ -1,24 +1,29 @@
-import {Request, Response, Router} from "express";
-import { postsRepository } from "../repositories/posts-repository";
+import { Request, Response, Router } from "express";
+import { postsService, QueryType } from "../domain/posts-service";
 import {
     hasBloggerMiddleware,
     inputValidators,
     sumErrorsMiddleware
 } from '../middlewares/input-validator-middleware';
-import {authMiddleWare} from "../middlewares/auth-middleware";
+import { authMiddleWare } from "../middlewares/auth-middleware";
 
 export const postsRouter = Router({});
 
-postsRouter.get('/', (req, res) => {
-    res.status(200).send(postsRepository.getPosts());
+postsRouter.get('/', async (req, res) => {
+
+    const pageNumber = req.query.pageNumber as QueryType;
+    const pageSize = req.query.pageSize as QueryType;
+
+    const result = await postsService.getPosts(pageNumber, pageSize);
+    res.status(200).send(result);
 });
 
-postsRouter.get('/:id', (req, res) => {
+postsRouter.get('/:id', async (req, res) => {
     const id = +req.params.id;
-    let findedPost = postsRepository.getPostById(id);
+    let foundPost = await postsService.getPostById(id);
 
-    if (findedPost) {
-        return res.status(200).send(findedPost);
+    if (foundPost) {
+        return res.status(200).send(foundPost);
     } else {
         return res.status(404).send();
     }
@@ -26,22 +31,22 @@ postsRouter.get('/:id', (req, res) => {
 
 postsRouter.post('/',
     authMiddleWare,
-    hasBloggerMiddleware,
+    // hasBloggerMiddleware,
     inputValidators.titleValidate,
     inputValidators.content,
     inputValidators.bloggerId,
     inputValidators.shortDescription,
     sumErrorsMiddleware,
-    (req: Request, res: Response) => {
+    async (req: Request, res: Response) => {
 
-    const title = req.body.title;
-    const shortDescription = req.body.shortDescription;
-    const content = req.body.content;
-    const bloggerId = req.body.bloggerId;
+        const title = req.body.title;
+        const shortDescription = req.body.shortDescription;
+        const content = req.body.content;
+        const bloggerId = req.body.bloggerId;
 
-    const newPost = postsRepository.createPost(title, shortDescription, content, bloggerId);
-    return res.status(201).send(newPost)
-})
+        const newPost = await postsService.createPost(title, shortDescription, content, bloggerId);
+        return res.status(201).send(newPost)
+    })
 
 postsRouter.put('/:id',
     authMiddleWare,
@@ -52,34 +57,31 @@ postsRouter.put('/:id',
     inputValidators.shortDescription,
     sumErrorsMiddleware,
 
-    (req: Request, res: Response) => {
-    const id = +req.params.id;
-    const title = req.body.title;
-    const shortDescription = req.body.shortDescription;
-    const content = req.body.content;
-    const bloggerId = req.body.bloggerId;
+    async (req: Request, res: Response) => {
+        const id = +req.params.id;
+        const title = req.body.title;
+        const shortDescription = req.body.shortDescription;
+        const content = req.body.content;
+        const bloggerId = req.body.bloggerId;
 
-    const found = postsRepository.getPostById(id);
+        const isUpdated = await postsService.updatePost(id, title, shortDescription, content, bloggerId)
 
-    if (!found) {
-        return res.status(404).send();
-
-    };
-    if (found) {
-        postsRepository.updatePost(id, title, shortDescription, content, bloggerId);
-        return res.status(204).send();
-    }
-})
+        if (isUpdated) {
+        //   const product = await postsService.getPostById(id);
+          res.send(204);
+        } else {
+          res.send(404);
+        }
+    })
 
 postsRouter.delete('/:id',
     authMiddleWare,
-    (req: Request, res: Response) => {
-    const id = +req.params.id;
-    const filteredPosts = postsRepository.deletePost(id);
-
-    if(!filteredPosts){
-        return res.status(404).send();
-    }
-    return res.status(204).send();
-
-})
+    async (req: Request, res: Response) => {
+        const id = +req.params.id;
+        const isDeleted = await postsService.deletePost(id);
+        if (isDeleted) {
+          return res.send(204)
+        } else {
+          return res.send(404)
+        }
+    })
