@@ -7,8 +7,8 @@ import { authMiddleWare } from "../middlewares/auth-middleware";
 export const bloggersRouter = Router({})
 
 bloggersRouter.get('/', async (req, res) => {
-  const pageNumber = req.query.pageNumber as QueryType;
-  const pageSize = req.query.pageSize as QueryType;
+  const pageNumber = req.query.PageNumber as QueryType;
+  const pageSize = req.query.PageSize as QueryType;
   const searchNameTerm = req.query.searchNameTerm as QueryType
 
   const bloggers = await bloggersService.getBloggers(pageNumber, pageSize, searchNameTerm);
@@ -29,8 +29,8 @@ bloggersRouter.get('/:id', async (req, res) => {
 
 bloggersRouter.get('/:bloggerId/posts', async (req, res) => {
   const bloggerId = +req.params.bloggerId;
-  const pageNumber = req.query.pageNumber as QueryType;
-  const pageSize = req.query.pageSize as QueryType;
+  const pageNumber = req.query.PageNumber as QueryType;
+  const pageSize = req.query.PageSize as QueryType;
   let foundBlogger = await bloggersService.getBloggerById(bloggerId)
 
   if (foundBlogger) {

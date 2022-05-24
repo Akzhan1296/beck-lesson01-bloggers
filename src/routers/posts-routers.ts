@@ -11,8 +11,8 @@ export const postsRouter = Router({});
 
 postsRouter.get('/', async (req, res) => {
 
-    const pageNumber = req.query.pageNumber as QueryType;
-    const pageSize = req.query.pageSize as QueryType;
+    const pageNumber = req.query.PageNumber as QueryType;
+    const pageSize = req.query.PageSize as QueryType;
 
     const result = await postsService.getPosts(pageNumber, pageSize);
     res.status(200).send(result);
