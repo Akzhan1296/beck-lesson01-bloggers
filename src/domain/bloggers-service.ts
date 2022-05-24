@@ -21,7 +21,7 @@ export const bloggersService = {
 
     let filter = {} as BloggerItem ;
     if(st.length > 0){
-      filter.name = st;
+      filter.name = new RegExp(st) as unknown as string;
     }
 
     const skip = (pn - 1) * ps;
