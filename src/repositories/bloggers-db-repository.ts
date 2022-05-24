@@ -22,9 +22,8 @@ export const bloggersRepository = {
     }
   },
   createBlogger: async (newBlogger: BloggerItem): Promise<BloggerItem> => {
-    const result = await bloggersCollection.insertOne(newBlogger);
-    const {_id, ...rest} = result
-    return rest;
+    await bloggersCollection.insertOne(newBlogger);
+    return newBlogger;
   },
   updateBlogger: async (id: number, updatedBlogger: BloggerItem): Promise<boolean> => {
     const result = await bloggersCollection.updateOne({ id: id }, { $set: updatedBlogger });

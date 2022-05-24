@@ -35,9 +35,8 @@ export const postsRepository = {
     }
   },
   createPost: async (newPost: PostItem):Promise<PostItem>  => {
-    const result = await postsCollection.insertOne(newPost);
-    const {_id, ...rest} = result;
-    return rest;
+    await postsCollection.insertOne(newPost);
+    return newPost;
   },
   updatePost: async (id: number, updatedPost: PostItem): Promise<boolean>  => {
     const result = await postsCollection.updateOne({ id: id }, { $set: updatedPost });
