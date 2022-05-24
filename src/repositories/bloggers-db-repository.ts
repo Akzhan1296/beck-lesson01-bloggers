@@ -10,8 +10,8 @@ export const bloggersRepository = {
   getBloggers: async (skip: number, limit: number, filter: BloggerItem): Promise<BloggerItem[]> => {
     return await bloggersCollection.find(filter).skip(skip).limit(limit).toArray();
   },
-  getBloggersCount: async (st: string) => {
-    return await bloggersCollection.count({name: st});
+  getBloggersCount: async (count: BloggerItem) => {
+    return await bloggersCollection.count(count);
   },
   getBloggerById: async (id: number): Promise<BloggerItem | null> => {
     let blogger = await bloggersCollection.findOne({ id: id });

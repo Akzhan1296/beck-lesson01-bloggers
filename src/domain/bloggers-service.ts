@@ -27,7 +27,7 @@ export const bloggersService = {
     const skip = (pn - 1) * ps;
 
     const posts = await bloggersRepository.getBloggers(skip, ps, filter);
-    const totalCount = await bloggersRepository.getBloggersCount(st);
+    const totalCount = await bloggersRepository.getBloggersCount(filter);
     const pagesCount = Math.ceil(totalCount / ps)
     return {
       page: pn,
