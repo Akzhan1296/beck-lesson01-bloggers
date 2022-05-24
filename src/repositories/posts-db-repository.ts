@@ -11,13 +11,13 @@ export type PostItem = {
 
 export const postsRepository = {
   getPosts: async (skip: number, limit: number):Promise<PostItem[]> => {
-    return await postsCollection.find().skip(skip).limit(limit).toArray();
+    return await postsCollection.find({}, {projection:{_id:0}}).skip(skip).limit(limit).toArray();
   },
   getPostsCount: async(count: PostItem) => {
     return await postsCollection.count(count);
   },
   getPostById: async (id: number): Promise<PostItem | null> => {
-    let foundPost = await postsCollection.findOne({ id: id });
+    let foundPost = await postsCollection.findOne({ id: id }, {projection:{_id:0}});
 
     if (foundPost) {
       return foundPost
