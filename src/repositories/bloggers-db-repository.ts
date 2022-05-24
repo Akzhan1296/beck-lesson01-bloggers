@@ -22,7 +22,7 @@ export const bloggersRepository = {
     }
   },
   createBlogger: async (newBlogger: BloggerItem): Promise<BloggerItem> => {
-    await bloggersCollection.insertOne(newBlogger);
+    await bloggersCollection.insertOne({...newBlogger}); 
     return newBlogger;
   },
   updateBlogger: async (id: number, updatedBlogger: BloggerItem): Promise<boolean> => {
