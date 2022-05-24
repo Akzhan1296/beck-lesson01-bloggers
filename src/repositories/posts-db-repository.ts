@@ -17,7 +17,7 @@ export const postsRepository = {
     return await postsCollection.count(count);
   },
   getPostById: async (id: number): Promise<PostItem | null> => {
-    let foundPost = await postsCollection.findOne({ id: id });
+    let foundPost = await postsCollection.findOne({ id: id }, {projection:{_id:0}});
 
     if (foundPost) {
       return foundPost
