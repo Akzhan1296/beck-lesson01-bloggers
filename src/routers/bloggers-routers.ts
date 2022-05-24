@@ -9,7 +9,7 @@ export const bloggersRouter = Router({})
 bloggersRouter.get('/', async (req, res) => {
   const pageNumber = req.query.PageNumber as QueryType;
   const pageSize = req.query.PageSize as QueryType;
-  const searchNameTerm = req.query.searchNameTerm as QueryType
+  const searchNameTerm = req.query.SearchNameTerm as QueryType
 
   const bloggers = await bloggersService.getBloggers(pageNumber, pageSize, searchNameTerm);
   res.status(200).send(bloggers);
@@ -89,8 +89,8 @@ bloggersRouter.put('/:id',
 
     const isUpdated = await bloggersService.updateBlogger(id, name, youtubeUrl)
     if (isUpdated) {
-      const product = await bloggersService.getBloggerById(id);
-      res.send(product)
+      await bloggersService.getBloggerById(id);
+      res.send(204)
     } else {
       res.send(404)
     }

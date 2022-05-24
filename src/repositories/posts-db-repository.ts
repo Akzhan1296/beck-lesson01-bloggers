@@ -17,7 +17,7 @@ export const postsRepository = {
     return await postsCollection.count(count);
   },
   getPostById: async (id: number): Promise<PostItem | null> => {
-    let foundPost = await postsCollection.findOne({ id: id }, {projection:{_id:0}});
+    let foundPost = await postsCollection.findOne({ id: id });
 
     if (foundPost) {
       return foundPost
@@ -26,9 +26,10 @@ export const postsRepository = {
     }
   },
   getPostByBloggerId: async (id: number, skip: number, limit: number): Promise<PostItem | null> => {
-    let foundPost = await postsCollection.find({bloggerId: id}).skip(skip).limit(limit).toArray();
+    let foundPost = await postsCollection.find({bloggerId: id}, {projection:{_id:0}}).skip(skip).limit(limit).toArray();
 
     if (foundPost) {
+
       return foundPost
     } else {
       return null;
