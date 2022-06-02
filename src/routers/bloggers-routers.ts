@@ -34,10 +34,14 @@ bloggersRouter.get('/:id', async (req, res) => {
 
 
 //get specific blogger POSTS
-bloggersRouter.get('/:bloggerId/posts', async (req, res) => {
+bloggersRouter.get('/:bloggerId/posts',
+  inputValidators.bloggerId,
+  sumErrorsMiddleware,
+  async (req, res) => {
   const bloggerId = new ObjectId(req.params.bloggerId);
   const pageNumber = req.query.PageNumber as QueryType;
   const pageSize = req.query.PageSize as QueryType;
+  console.log(bloggerId);
   let foundBlogger = await bloggersService.getBloggerById(bloggerId)
 
   if (foundBlogger) {
@@ -66,6 +70,7 @@ bloggersRouter.post('/',
 // create POST for specific blogger 
 bloggersRouter.post('/:bloggerId/posts',
   authMiddleWare,
+  inputValidators.bloggerId,
   inputValidators.titleValidate,
   inputValidators.content,
   inputValidators.shortDescription,
