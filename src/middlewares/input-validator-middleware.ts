@@ -1,13 +1,14 @@
 import { body, validationResult } from 'express-validator'
 import { NextFunction, Request, Response } from "express";
 import { bloggersRepository } from "../repositories/bloggers-db-repository";
+import { ObjectId } from 'mongodb';
 
 
 export const inputValidators = {
   titleValidate: body('title').trim().notEmpty().isLength({ max: 15 }),
   shortDescription: body('shortDescription').trim().notEmpty().isLength({ max: 100 }),
   content: body('content').trim().notEmpty().isLength({ max: 1000 }),
-  bloggerId: body('bloggerId').notEmpty().isNumeric(),
+  bloggerId: body('bloggerId').notEmpty(),
   name: body('name').trim().notEmpty().isLength({ max: 15 }),
   youtubeUrl: body('youtubeUrl').trim().notEmpty().isLength({ max: 100 }).matches('^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$'),
   login: body('login').notEmpty().isLength({ min: 3, max: 10 }),
@@ -30,7 +31,7 @@ export const sumErrorsMiddleware = (req: Request, res: Response, next: NextFunct
 }
 
 export const hasBloggerMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-  const bloggerId = req.body.bloggerId;
+  const bloggerId = new ObjectId(req.body.bloggerId);
   const bloggers = await bloggersRepository.getBloggerById(bloggerId);
 
   if (!bloggers) {

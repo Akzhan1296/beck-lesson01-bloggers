@@ -1,4 +1,4 @@
-import { UserType } from '../types/types';
+import { UserDBType, UserType } from '../types/types';
 import { ObjectId } from 'mongodb'
 import jwt, { SignOptions } from 'jsonwebtoken'
 import { settings } from '../settings';
@@ -8,7 +8,7 @@ export const jwtUtility = {
    * @param user
    * @return Returns JWT-token
    */
-  async createJWT(user: UserType) {
+  async createJWT(user: UserDBType) {
     const payload = { userId: user._id }
     const secretOrPrivateKey = settings.JWT_SECRET;
     const options: SignOptions = {

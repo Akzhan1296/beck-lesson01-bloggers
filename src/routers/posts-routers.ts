@@ -8,6 +8,8 @@ import {
 import { authMiddleWare, userAuthMiddleware } from "../middlewares/auth-middleware";
 import { QueryType } from '../types/types';
 import { commentsService } from "../domain/comments-service";
+import { ObjectId } from "mongodb";
+import { transferIdToString } from "../application/utils";
 
 export const postsRouter = Router({});
 
@@ -22,11 +24,11 @@ postsRouter.get('/', async (req, res) => {
 
 //get POST by id
 postsRouter.get('/:id', async (req, res) => {
-  const id = +req.params.id;
+  const id = new ObjectId(req.params.id);
   let foundPost = await postsService.getPostById(id);
 
   if (foundPost) {
-    return res.status(200).send(foundPost);
+    return res.status(200).send(transferIdToString(foundPost));
   } else {
     return res.status(404).send();
   }
@@ -49,7 +51,8 @@ postsRouter.post('/',
     const bloggerId = req.body.bloggerId;
 
     const newPost = await postsService.createPost(title, shortDescription, content, bloggerId);
-    return res.status(201).send(newPost)
+
+    return res.status(201).send(transferIdToString(newPost));
   });
 
 //update post
@@ -62,7 +65,7 @@ postsRouter.put('/:id',
   inputValidators.shortDescription,
   sumErrorsMiddleware,
   async (req: Request, res: Response) => {
-    const id = +req.params.id;
+    const id = new ObjectId(req.params.id);
     const title = req.body.title;
     const shortDescription = req.body.shortDescription;
     const content = req.body.content;
@@ -81,7 +84,7 @@ postsRouter.put('/:id',
 postsRouter.delete('/:id',
   authMiddleWare,
   async (req: Request, res: Response) => {
-    const id = +req.params.id;
+    const id = new ObjectId(req.params.id);
     const isDeleted = await postsService.deletePost(id);
     if (isDeleted) {
       return res.send(204)
@@ -96,7 +99,7 @@ postsRouter.post('/:postId/comments',
   inputValidators.comments,
   sumErrorsMiddleware,
   async (req: Request, res: Response) => {
-    const postId = +req.params.postId;
+    const postId = new ObjectId(req.params.postId);
     const comment = req.body.content;
     const user = req.user;
 
@@ -104,8 +107,8 @@ postsRouter.post('/:postId/comments',
 
     if (foundPost) {
       const newComment = await commentsService.createCommentForSelectedPost(comment, user.login, user._id);
-      const { _id, ...rest } = newComment;
-      return res.status(201).send({ id: _id, ...rest });
+
+      return res.status(201).send(transferIdToString(newComment));
     }
 
     return res.status(404).send();
@@ -115,12 +118,12 @@ postsRouter.post('/:postId/comments',
 // get selected post comments
 postsRouter.get('/:postId/comments',
   async (req: Request, res: Response) => {
-    const postId = +req.params.postId;
+    const postId = new ObjectId(req.params.postId);
     const pageNumber = Number(req.query.PageNumber) || 1;
     const pageSize = Number(req.query.PageSize) || 10;
-  
+
     const skip = (pageNumber - 1) * pageSize;
-  
+
     const posts = await commentsService.getAllPosts(skip, pageSize);
     const totalCount = await commentsService.getAllPostsCount();
     const pagesCount = Math.ceil(totalCount / pageSize);
@@ -136,8 +139,7 @@ postsRouter.get('/:postId/comments',
       pageSize: pageSize,
       totalCount,
       pagesCount,
-      items: posts.map(({_id, ...rest}) => ({id: _id, ...rest}))
+      items: posts.map(p => transferIdToString(p))
     })
-
   }
 )

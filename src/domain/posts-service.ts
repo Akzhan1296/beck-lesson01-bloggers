@@ -1,5 +1,7 @@
+import { ObjectId } from 'mongodb';
+import { transferIdToString } from '../application/utils';
 import { postsRepository } from '../repositories/posts-db-repository';
-import { PostItemType, QueryType } from '../types/types';
+import { PostItemDBType, PostItemType, QueryType } from '../types/types';
 
 export const postsService = {
   getPosts: async (pageNumber: QueryType, pageSize: QueryType) => {
@@ -23,13 +25,13 @@ export const postsService = {
       pageSize: ps,
       totalCount,
       pagesCount,
-      items: posts,
+      items: posts.map(p => transferIdToString(p)),
     }
   },
-  getPostById: async (id: number): Promise<PostItemType | null> => {
+  getPostById: async (id: ObjectId): Promise<PostItemDBType | null> => {
     return postsRepository.getPostById(id);
   },
-  getPostByBloggerId: async (id: number, pageNumber: QueryType, pageSize: QueryType) => {
+  getPostByBloggerId: async (id: ObjectId, pageNumber: QueryType, pageSize: QueryType) => {
 
     let pn = 1;
     let ps = 10;
@@ -50,12 +52,11 @@ export const postsService = {
       pageSize: ps,
       totalCount,
       pagesCount,
-      items: postsByBlogger,
+      items: postsByBlogger && postsByBlogger.map(p => transferIdToString(p)),
     }
   },
-  createPost: async (title: string, shortDescription: string, content: string, bloggerId: number) => {
+  createPost: async (title: string, shortDescription: string, content: string, bloggerId: ObjectId) => {
     const newPost = {
-      id: +(new Date()),
       title,
       shortDescription,
       content,
@@ -65,7 +66,7 @@ export const postsService = {
     const createdPost = await postsRepository.createPost(newPost);
     return createdPost;
   },
-  updatePost: async (id: number, title: string, shortDescription: string, content: string, bloggerId: number) => {
+  updatePost: async (id: ObjectId, title: string, shortDescription: string, content: string, bloggerId: ObjectId) => {
     const updatedPost = {
       id,
       title,
@@ -77,7 +78,7 @@ export const postsService = {
     const result = await postsRepository.updatePost(id, updatedPost);
     return result;
   },
-  deletePost: async (id: number) => {
+  deletePost: async (id: ObjectId) => {
     return await postsRepository.deletePost(id);
   }
 }

@@ -4,6 +4,8 @@ import { postsService } from '../domain/posts-service';
 import { hasBloggerMiddleware, inputValidators, sumErrorsMiddleware } from '../middlewares/input-validator-middleware';
 import { authMiddleWare } from "../middlewares/auth-middleware";
 import { QueryType } from '../types/types';
+import { ObjectId } from "mongodb";
+import { transferIdToString } from "../application/utils";
 
 export const bloggersRouter = Router({});
 
@@ -19,12 +21,12 @@ bloggersRouter.get('/', async (req, res) => {
 
 //get blogger by id
 bloggersRouter.get('/:id', async (req, res) => {
-  const id = +req.params.id;
+  const id = new ObjectId(req.params.id);
 
   let foundBlogger = await bloggersService.getBloggerById(id)
 
   if (foundBlogger) {
-    return res.status(200).send(foundBlogger);
+    return res.status(200).send(transferIdToString(foundBlogger));
   } else {
     return res.status(404).send();
   }
@@ -33,7 +35,7 @@ bloggersRouter.get('/:id', async (req, res) => {
 
 //get specific blogger POSTS
 bloggersRouter.get('/:bloggerId/posts', async (req, res) => {
-  const bloggerId = +req.params.bloggerId;
+  const bloggerId = new ObjectId(req.params.bloggerId);
   const pageNumber = req.query.PageNumber as QueryType;
   const pageSize = req.query.PageSize as QueryType;
   let foundBlogger = await bloggersService.getBloggerById(bloggerId)
@@ -57,8 +59,8 @@ bloggersRouter.post('/',
     const name = req.body.name;
     const youtubeUrl = req.body.youtubeUrl;
 
-    const newBlogger = await bloggersService.createBlogger(name, youtubeUrl)
-    return res.status(201).send(newBlogger)
+    const newBlogger = await bloggersService.createBlogger(name, youtubeUrl);
+    return res.status(201).send(transferIdToString(newBlogger));
   })
 
 // create POST for specific blogger 
@@ -73,12 +75,12 @@ bloggersRouter.post('/:bloggerId/posts',
     const title = req.body.title;
     const shortDescription = req.body.shortDescription;
     const content = req.body.content;
-    const bloggerId = +req.params.bloggerId;
+    const bloggerId = new ObjectId(req.params.bloggerId);
 
     let foundBlogger = await bloggersService.getBloggerById(bloggerId)
     if (foundBlogger) {
       const newPost = await postsService.createPost(title, shortDescription, content, bloggerId);
-      return res.status(201).send(newPost);
+      return res.status(201).send(transferIdToString(newPost));
     } else {
       return res.status(404).send();
     }
@@ -91,16 +93,16 @@ bloggersRouter.put('/:id',
   inputValidators.youtubeUrl,
   sumErrorsMiddleware,
   async (req: Request, res: Response) => {
-    const id = +req.params.id;
+    const id = new ObjectId(req.params.id);
     const name = req.body.name;
     const youtubeUrl = req.body.youtubeUrl;
 
     const isUpdated = await bloggersService.updateBlogger(id, name, youtubeUrl)
     if (isUpdated) {
       await bloggersService.getBloggerById(id);
-      res.send(204)
+      return res.send(204);
     } else {
-      res.send(404)
+      return res.send(404);
     }
   })
 
@@ -108,7 +110,7 @@ bloggersRouter.put('/:id',
 bloggersRouter.delete('/:id',
   authMiddleWare,
   async (req: Request, res: Response) => {
-    const id = +req.params.id;
+    const id = new ObjectId(req.params.id);
 
     const isDeleted = await bloggersService.deleteBlogger(id);
     if (isDeleted) {

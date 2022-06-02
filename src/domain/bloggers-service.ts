@@ -1,5 +1,6 @@
+import { ObjectId } from "mongodb";
 import { bloggersRepository } from "../repositories/bloggers-db-repository";
-import { BloggerItemType, QueryType } from '../types/types';
+import { BloggerItemDBType, BloggerItemType, QueryType } from '../types/types';
 
 export const bloggersService = {
   getBloggers: async (pageNumber: QueryType, pageSize: QueryType, searchNameTerm: QueryType) => {
@@ -25,7 +26,7 @@ export const bloggersService = {
 
     const skip = (pn - 1) * ps;
 
-    const posts = await bloggersRepository.getBloggers(skip, ps, filter);
+    const bloggers = await bloggersRepository.getBloggers(skip, ps, filter);
     const totalCount = await bloggersRepository.getBloggersCount(filter);
     const pagesCount = Math.ceil(totalCount / ps)
     return {
@@ -33,32 +34,28 @@ export const bloggersService = {
       pageSize: ps,
       totalCount,
       pagesCount,
-      items: posts,
+      items: bloggers.map(({_id, ...rest}) => ({id: _id, ...rest})),
     }
   },
-  getBloggerById: async (id: number): Promise<BloggerItemType | null> => {
+  getBloggerById: async (id: ObjectId): Promise<BloggerItemDBType | null> => {
     return bloggersRepository.getBloggerById(id);
   },
-  createBlogger: async (name: string, youtubeUrl: string): Promise<BloggerItemType> => {
+  createBlogger: async (name: string, youtubeUrl: string): Promise<BloggerItemDBType> => {
     const newBlogger = {
-      id: +(new Date()),
       name,
       youtubeUrl,
     }
     const createdBlogger = await bloggersRepository.createBlogger(newBlogger)
     return createdBlogger;
   },
-  updateBlogger: async (id: number, name: string, youtubeUrl: string): Promise<boolean> => {
+  updateBlogger: async (id: ObjectId, name: string, youtubeUrl: string): Promise<boolean> => {
     const updatedBlogger = {
-      id,
       name,
       youtubeUrl,
     }
-    const result = await bloggersRepository.updateBlogger(id, updatedBlogger);
-
-    return result;
+    return await bloggersRepository.updateBlogger(id, updatedBlogger);
   },
-  deleteBlogger: async (id: number): Promise<boolean> => {
+  deleteBlogger: async (id: ObjectId): Promise<boolean> => {
     return await bloggersRepository.deleteBlogger(id);
   },
 }

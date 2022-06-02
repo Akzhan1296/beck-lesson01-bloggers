@@ -1,5 +1,6 @@
 import { Request, Response, Router } from "express";
 import { ObjectId } from "mongodb";
+import { transferIdToString } from "../application/utils";
 import { usersService } from "../domain/users-service";
 import { authMiddleWare } from "../middlewares/auth-middleware";
 import { inputValidators, sumErrorsMiddleware } from "../middlewares/input-validator-middleware";
@@ -22,14 +23,14 @@ usersRouter.get('/', async (req: Request, res: Response) => {
     pageSize: pageSize,
     totalCount,
     pagesCount,
-    items: users.map(u => ({ login: u.login, id: u._id })),
+    items: users.map(u => transferIdToString(u)),
   })
 });
 
 // create user with JWT
 usersRouter.post('/', authMiddleWare, inputValidators.login, inputValidators.password, sumErrorsMiddleware, async (req: Request, res: Response) => {
   const newUser = await usersService.createUser(req.body.login, req.body.password);
-  return res.status(201).send({ id: newUser._id, login: newUser.login });
+  return res.status(201).send(transferIdToString(newUser));
 });
 
 // delete user with JWT

@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import { usersRepository } from '../repositories/users-db-repository';
-import { UserType } from '../types/types';
+import { UserDBType, UserType } from '../types/types';
 
 
 export const authService = {
@@ -15,7 +15,7 @@ export const authService = {
    * @param password
    * @return null if credentials are incorrect and admin entity in opposite case
    */
-  async checkCredentials(userLogin: string, password: string): Promise<UserType | null> {
+  async checkCredentials(userLogin: string, password: string): Promise<UserDBType | null> {
     let user = await usersRepository.findByLogin(userLogin);
     if (!user) {
       return null

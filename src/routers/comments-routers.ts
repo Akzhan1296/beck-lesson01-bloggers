@@ -1,5 +1,6 @@
 import { Request, Response, Router } from "express";
 import { ObjectId } from "mongodb";
+import { transferIdToString } from "../application/utils";
 import { commentsService } from "../domain/comments-service";
 import { userAuthMiddleware } from "../middlewares/auth-middleware";
 import { inputValidators, sumErrorsMiddleware } from "../middlewares/input-validator-middleware";
@@ -13,9 +14,7 @@ commentsRouter.get('/:id',
     let foundComment = await commentsService.getCommentById(commentId);
 
     if (foundComment) {
-      const { _id, ...rest } = foundComment;
-
-      return res.status(200).send({ id: _id, ...rest });
+      return res.status(200).send(transferIdToString(foundComment));
     } else {
       return res.status(404).send();
     }

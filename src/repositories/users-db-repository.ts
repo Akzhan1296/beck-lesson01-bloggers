@@ -1,21 +1,21 @@
 import { ObjectId } from "mongodb";
-import { UserType } from "../types/types";
+import { UserDBType, UserType } from "../types/types";
 import { usersCollection } from "./db";
 
 export const usersRepository = {
-  createUser: async (newUser: UserType): Promise<UserType> => {
+  createUser: async (newUser: UserType): Promise<UserDBType> => {
     await usersCollection.insertOne(newUser);
-    return newUser;
+    return newUser as UserDBType;
   },
-  findByLogin: async (login: string): Promise<UserType | null> => {
-    const user = await usersCollection.findOne({ login })
+  findByLogin: async (login: string): Promise<UserDBType | null> => {
+    const user = await usersCollection.findOne({ login });
     return user;
   },
-  findById: async (id: ObjectId): Promise<UserType | null> => {
+  findById: async (id: ObjectId): Promise<UserDBType | null> => {
     const user = await usersCollection.findOne({ _id: id })
     return user;
   },
-  getAllUsers: async (skip: number, limit: number): Promise<UserType[]> => {
+  getAllUsers: async (skip: number, limit: number): Promise<UserDBType[]> => {
     return await usersCollection.find().skip(skip).limit(limit).toArray();
   },
   getAllUsersCount: async () => {
@@ -23,7 +23,6 @@ export const usersRepository = {
   },
   deleteUser: async (id: ObjectId): Promise<boolean> => {
     const result = await usersCollection.deleteOne({ _id: id });
-    console.log(result);
     return result.deletedCount === 1
   }
 };

@@ -1,11 +1,10 @@
 import { ObjectId } from "mongodb";
 import { commentsRepository } from "../repositories/comments-db-repositry";
-import { CommentType } from "../types/types";
+import { CommentDBType, CommentType } from "../types/types";
 
 export const commentsService = {
   createCommentForSelectedPost: async (content: string, userLogin: string, userId: ObjectId) => {
     const newComment = {
-      _id: new ObjectId(),
       content,
       userLogin,
       userId,
@@ -13,13 +12,13 @@ export const commentsService = {
     }
     return commentsRepository.createCommentForSelectedPost(newComment);
   },
-  getAllPosts: async (skip: number, limit: number): Promise<CommentType[]> => {
+  getAllPosts: async (skip: number, limit: number): Promise<CommentDBType[]> => {
     return await commentsRepository.getAllPosts(skip, limit);
   },
   getAllPostsCount: async () => {
     return await commentsRepository.getAllPostsCount();
   },
-  getCommentById: async (id: ObjectId): Promise<CommentType | null> => {
+  getCommentById: async (id: ObjectId): Promise<CommentDBType | null> => {
     return await commentsRepository.getCommentById(id);
   },
   deleteComment: async (id: ObjectId): Promise<boolean> => {
@@ -28,7 +27,6 @@ export const commentsService = {
   updateComment: async (id: ObjectId, content: string, userLogin: string, userId: ObjectId): Promise<boolean> => {
 
     const updatedComment = {
-      _id: new ObjectId(id),
       content,
       userLogin,
       userId,
@@ -36,6 +34,6 @@ export const commentsService = {
     }
 
 
-    return await commentsRepository.updateComment(updatedComment);
+    return await commentsRepository.updateComment(id, updatedComment);
   }
 };
