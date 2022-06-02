@@ -12,9 +12,14 @@ export const authMiddleWare = (req: Request, res: Response, next: NextFunction) 
     }
     const name = decoded.split(':')[0];
     const password = decoded.split(':')[1];
-    if (name === 'admin' && password === 'qwerty') {
-      return next();
+    try {
+      if (name === 'admin' && password === 'qwerty') {
+        return next();
+      }
+    } catch (err) {
+      return res.status(401).send();
     }
+
   }
   return res.status(401).send();
 };
@@ -22,20 +27,17 @@ export const authMiddleWare = (req: Request, res: Response, next: NextFunction) 
 
 export const userAuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.headers.authorization) {
-      res.sendStatus(401)
-      return
+    res.sendStatus(401)
+    return
   }
 
   const token = req.headers.authorization.split(' ')[1];
   const userId = await jwtUtility.extractUserIdFromToken(token)
-  if(userId) {
-    console.log(userId);
-
+  if (userId) {
     const user = await usersService.findUserById(userId);
-
-      req.user = user;
-      next();
-      return;
+    req.user = user;
+    next();
+    return;
   }
 
   res.send(401)
