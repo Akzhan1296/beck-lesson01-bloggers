@@ -1,6 +1,5 @@
-import { bloggersRepository, BloggerItem } from "../repositories/bloggers-db-repository";
-
-export type QueryType = string | string[] | undefined
+import { bloggersRepository } from "../repositories/bloggers-db-repository";
+import { BloggerItemType, QueryType } from '../types/types';
 
 export const bloggersService = {
   getBloggers: async (pageNumber: QueryType, pageSize: QueryType, searchNameTerm: QueryType) => {
@@ -15,12 +14,12 @@ export const bloggersService = {
     if (pageSize) {
       ps = Number(pageSize)
     }
-    if(searchNameTerm) {
+    if (searchNameTerm) {
       st = searchNameTerm as string;
     }
 
-    let filter = {} as BloggerItem ;
-    if(st.length > 0){
+    let filter = {} as BloggerItemType;
+    if (st.length > 0) {
       filter.name = new RegExp(st) as unknown as string;
     }
 
@@ -37,10 +36,10 @@ export const bloggersService = {
       items: posts,
     }
   },
-  getBloggerById: async (id: number): Promise<BloggerItem | null> => {
+  getBloggerById: async (id: number): Promise<BloggerItemType | null> => {
     return bloggersRepository.getBloggerById(id);
   },
-  createBlogger: async (name: string, youtubeUrl: string): Promise<BloggerItem> => {
+  createBlogger: async (name: string, youtubeUrl: string): Promise<BloggerItemType> => {
     const newBlogger = {
       id: +(new Date()),
       name,

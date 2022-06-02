@@ -1,6 +1,5 @@
-import { PostItem, postsRepository } from '../repositories/posts-db-repository';
-
-export type QueryType = string | string[] | undefined
+import { postsRepository } from '../repositories/posts-db-repository';
+import { PostItemType, QueryType } from '../types/types';
 
 export const postsService = {
   getPosts: async (pageNumber: QueryType, pageSize: QueryType) => {
@@ -16,7 +15,7 @@ export const postsService = {
     const skip = (pn - 1) * ps;
 
     const posts = await postsRepository.getPosts(skip, ps);
-    const totalCount = await postsRepository.getPostsCount({} as PostItem);
+    const totalCount = await postsRepository.getPostsCount({} as PostItemType);
     const pagesCount = Math.ceil(totalCount / ps);
 
     return {
@@ -27,7 +26,7 @@ export const postsService = {
       items: posts,
     }
   },
-  getPostById: async (id: number): Promise<PostItem | null> => {
+  getPostById: async (id: number): Promise<PostItemType | null> => {
     return postsRepository.getPostById(id);
   },
   getPostByBloggerId: async (id: number, pageNumber: QueryType, pageSize: QueryType) => {
@@ -42,7 +41,7 @@ export const postsService = {
     }
     const skip = (pn - 1) * ps;
 
-    const totalCount = await postsRepository.getPostsCount({ bloggerId: id } as PostItem);
+    const totalCount = await postsRepository.getPostsCount({ bloggerId: id } as PostItemType);
     const postsByBlogger = await postsRepository.getPostByBloggerId(id, skip, ps);
     const pagesCount = Math.ceil(totalCount / ps);
 

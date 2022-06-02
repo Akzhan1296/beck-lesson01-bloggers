@@ -5,6 +5,8 @@ import bodyParser from "body-parser";
 //routers
 import {bloggersRouter} from "./routers/bloggers-routers";
 import {postsRouter} from "./routers/posts-routers";
+import {authRouter} from './routers/auth-routers'
+import {usersRouter} from './routers/users-routers';
 
 //middlewares
 import {blockIpMiddleWare} from './middlewares/block-ip-middleware';
@@ -13,6 +15,7 @@ import {checkContentTypeMiddleWare} from './middlewares/content-type-check-middl
 
 //dataBase
 import {runDb} from './repositories/db'
+import { commentsRouter } from './routers/comments-routers';
 
 const app = express()
 const port = process.env.PORT || 3000;
@@ -22,11 +25,13 @@ app.use(bodyParser.json());
 
 // app.use(blockIpMiddleWare);
 // app.use(countRequestsMiddleWare);
-//app.use(checkContentTypeMiddleWare('application/json'))
+// app.use(checkContentTypeMiddleWare('application/json'))
 
+app.use('/', authRouter);
+app.use('/users', usersRouter);
 app.use('/bloggers', bloggersRouter);
 app.use('/posts', postsRouter);
-
+app.use('/comments', commentsRouter);
 
 const startApp = async () => {
     await runDb();

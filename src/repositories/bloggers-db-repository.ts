@@ -1,31 +1,27 @@
 import { bloggersCollection } from './db';
+import { BloggerItemType } from '../types/types';
 
-export type BloggerItem = {
-  id: number
-  name: string
-  youtubeUrl: string
-}
 
 export const bloggersRepository = {
-  getBloggers: async (skip: number, limit: number, filter: BloggerItem): Promise<BloggerItem[]> => {
-    return await bloggersCollection.find(filter, {projection:{_id:0}}).skip(skip).limit(limit).toArray();
+  getBloggers: async (skip: number, limit: number, filter: BloggerItemType): Promise<BloggerItemType[]> => {
+    return await bloggersCollection.find(filter, { projection: { _id: 0 } }).skip(skip).limit(limit).toArray();
   },
-  getBloggersCount: async (count: BloggerItem) => {
+  getBloggersCount: async (count: BloggerItemType) => {
     return await bloggersCollection.count(count);
   },
-  getBloggerById: async (id: number): Promise<BloggerItem | null> => {
-    let blogger = await bloggersCollection.findOne({ id: id }, {projection:{_id:0}});
+  getBloggerById: async (id: number): Promise<BloggerItemType | null> => {
+    let blogger = await bloggersCollection.findOne({ id: id }, { projection: { _id: 0 } });
     if (blogger) {
       return blogger;
     } else {
       return null;
     }
   },
-  createBlogger: async (newBlogger: BloggerItem): Promise<BloggerItem> => {
-    await bloggersCollection.insertOne({...newBlogger}); 
+  createBlogger: async (newBlogger: BloggerItemType): Promise<BloggerItemType> => {
+    await bloggersCollection.insertOne({ ...newBlogger });
     return newBlogger;
   },
-  updateBlogger: async (id: number, updatedBlogger: BloggerItem): Promise<boolean> => {
+  updateBlogger: async (id: number, updatedBlogger: BloggerItemType): Promise<boolean> => {
     const result = await bloggersCollection.updateOne({ id: id }, { $set: updatedBlogger });
     return result.matchedCount === 1
   },

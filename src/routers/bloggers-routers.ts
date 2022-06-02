@@ -1,11 +1,13 @@
 import { Request, Response, Router } from "express";
-import { bloggersService, QueryType } from "../domain/bloggers-service";
+import { bloggersService } from "../domain/bloggers-service";
 import { postsService } from '../domain/posts-service';
-import { hasBloggerMiddleware, inputValidators, sumErrorsMiddleware } from '../middlewares/input-validator-middleware'
+import { hasBloggerMiddleware, inputValidators, sumErrorsMiddleware } from '../middlewares/input-validator-middleware';
 import { authMiddleWare } from "../middlewares/auth-middleware";
+import { QueryType } from '../types/types';
 
-export const bloggersRouter = Router({})
+export const bloggersRouter = Router({});
 
+//get all bloggers
 bloggersRouter.get('/', async (req, res) => {
   const pageNumber = req.query.PageNumber as QueryType;
   const pageSize = req.query.PageSize as QueryType;
@@ -15,6 +17,7 @@ bloggersRouter.get('/', async (req, res) => {
   res.status(200).send(bloggers);
 });
 
+//get blogger by id
 bloggersRouter.get('/:id', async (req, res) => {
   const id = +req.params.id;
 
@@ -27,6 +30,8 @@ bloggersRouter.get('/:id', async (req, res) => {
   }
 })
 
+
+//get specific blogger POSTS
 bloggersRouter.get('/:bloggerId/posts', async (req, res) => {
   const bloggerId = +req.params.bloggerId;
   const pageNumber = req.query.PageNumber as QueryType;
@@ -41,6 +46,7 @@ bloggersRouter.get('/:bloggerId/posts', async (req, res) => {
   }
 })
 
+//create blogger
 bloggersRouter.post('/',
   authMiddleWare,
   inputValidators.name,
@@ -55,7 +61,8 @@ bloggersRouter.post('/',
     return res.status(201).send(newBlogger)
   })
 
-  bloggersRouter.post('/:bloggerId/posts',
+// create POST for specific blogger 
+bloggersRouter.post('/:bloggerId/posts',
   authMiddleWare,
   inputValidators.titleValidate,
   inputValidators.content,
@@ -77,6 +84,7 @@ bloggersRouter.post('/',
     }
   })
 
+//update blogger
 bloggersRouter.put('/:id',
   authMiddleWare,
   inputValidators.name,
@@ -96,6 +104,7 @@ bloggersRouter.put('/:id',
     }
   })
 
+// delete blogger
 bloggersRouter.delete('/:id',
   authMiddleWare,
   async (req: Request, res: Response) => {
