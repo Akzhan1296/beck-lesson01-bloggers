@@ -52,7 +52,7 @@ export const postsService = {
       pageSize: ps,
       totalCount,
       pagesCount,
-      items: postsByBlogger && postsByBlogger.map(p => transferIdToString(p)),
+      items: postsByBlogger,
     }
   },
   createPost: async (title: string, shortDescription: string, content: string, bloggerId: string) => {

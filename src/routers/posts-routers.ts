@@ -52,6 +52,8 @@ postsRouter.post('/',
 
     const newPost = await postsService.createPost(title, shortDescription, content, bloggerId);
 
+    console.log(newPost);
+
     return res.status(201).send(transferIdToString(newPost));
   });
 
@@ -107,6 +109,8 @@ postsRouter.post('/:postId/comments',
 
     if (foundPost) {
       const newComment = await commentsService.createCommentForSelectedPost(comment, user.login, user._id);
+
+      console.log(newComment);
 
       return res.status(201).send(transferIdToString(newComment));
     }
