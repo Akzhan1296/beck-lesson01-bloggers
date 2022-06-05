@@ -57,8 +57,9 @@ bloggersRouter.post('/',
     const name = req.body.name;
     const youtubeUrl = req.body.youtubeUrl;
 
-    const newBlogger = await bloggersService.createBlogger(name, youtubeUrl)
-    return res.status(201).send(newBlogger)
+    const newBlogger = await bloggersService.createBlogger(name, youtubeUrl);
+    const {id, ...rest} = newBlogger;
+    return res.status(201).send({id: id.toString(), ...rest});
   })
 
 // create POST for specific blogger 
