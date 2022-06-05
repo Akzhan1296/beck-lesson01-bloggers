@@ -13,6 +13,7 @@ export const inputValidators = {
   login: body('login').notEmpty().isLength({ min: 3, max: 10 }),
   password: body('password').notEmpty().isLength({ min: 6, max: 20 }),
   comments: body('content').trim().notEmpty().isLength({min: 20, max: 300}),
+  bloggerId: body('bloggerId').trim().notEmpty(),
 };
 
 export const sumErrorsMiddleware = (req: Request, res: Response, next: NextFunction) => {

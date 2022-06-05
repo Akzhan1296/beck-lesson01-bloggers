@@ -41,6 +41,7 @@ postsRouter.post('/',
   inputValidators.titleValidate,
   inputValidators.content,
   inputValidators.shortDescription,
+  inputValidators.bloggerId,
   sumErrorsMiddleware,
   async (req: Request, res: Response) => {
 
@@ -61,6 +62,7 @@ postsRouter.put('/:id',
   inputValidators.titleValidate,
   inputValidators.content,
   inputValidators.shortDescription,
+  inputValidators.bloggerId
   sumErrorsMiddleware,
   async (req: Request, res: Response) => {
     const id = req.params.id;
