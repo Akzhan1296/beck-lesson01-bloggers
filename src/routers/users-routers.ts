@@ -25,7 +25,7 @@ usersRouter.get('/', async (req: Request, res: Response) => {
     pageSize: pageSize,
     totalCount,
     pagesCount,
-    items: users.map(u => transferIdToString(u)),
+    items: users.map(u => ({id: u._id.toString(), login: u.login })),
   })
 });
 
