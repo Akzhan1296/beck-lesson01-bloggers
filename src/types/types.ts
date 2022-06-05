@@ -23,7 +23,6 @@ export type BloggerItemType = {
 export type BloggerItemDBType = WithId<BloggerItemType>
 
 export type UserType = {
-  id: string,
   login: string
   passwordHash: string
   createdAt: Date

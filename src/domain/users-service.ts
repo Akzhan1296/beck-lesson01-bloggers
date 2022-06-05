@@ -15,7 +15,6 @@ export const usersService = {
     const passwordHash = await authService.generateHash(userPassword);
 
     const newUser: UserType = {
-      id: new ObjectId(),
       login: userLogin,
       passwordHash,
       createdAt: new Date(),
