@@ -20,12 +20,14 @@ usersRouter.get('/', async (req: Request, res: Response) => {
   const totalCount = await usersService.getAllUsersCount();
   const pagesCount = Math.ceil(totalCount / pageSize);
 
+  console.log(users);
+
   return res.status(200).send({
     page: pageNumber,
     pageSize: pageSize,
     totalCount,
     pagesCount,
-    items: users.map(u => ({id: u.id.toString(), login: u.login })),
+    items: users.map(u => ({id: u.id, login: u.login })),
   })
 });
 
