@@ -11,8 +11,8 @@ export const usersRepository = {
     const user = await usersCollection.findOne({ login });
     return user;
   },
-  findById: async (id: ObjectId): Promise<UserDBType | null> => {
-    const user = await usersCollection.findOne({ _id: id })
+  findById: async (id: string): Promise<UserDBType | null> => {
+    const user = await usersCollection.findOne({ id })
     return user;
   },
   getAllUsers: async (skip: number, limit: number): Promise<UserDBType[]> => {
@@ -21,8 +21,8 @@ export const usersRepository = {
   getAllUsersCount: async () => {
     return await usersCollection.count();
   },
-  deleteUser: async (id: ObjectId): Promise<boolean> => {
-    const result = await usersCollection.deleteOne({ _id: id });
+  deleteUser: async (id: string): Promise<boolean> => {
+    const result = await usersCollection.deleteOne({ id });
     return result.deletedCount === 1
   }
 };

@@ -15,6 +15,7 @@ export const usersService = {
     const passwordHash = await authService.generateHash(userPassword);
 
     const newUser: UserType = {
+      id: new ObjectId().toString(),
       login: userLogin,
       passwordHash,
       createdAt: new Date(),
@@ -22,10 +23,10 @@ export const usersService = {
 
     return usersRepository.createUser(newUser);
   },
-  findUserById: async(id: ObjectId): Promise<UserDBType | null> => {
+  findUserById: async(id: string): Promise<UserDBType | null> => {
     return usersRepository.findById(id);
   },
-  deleteUser: async(id: ObjectId): Promise<boolean> => {
+  deleteUser: async(id: string): Promise<boolean> => {
     return usersRepository.deleteUser(id);
   }
 };

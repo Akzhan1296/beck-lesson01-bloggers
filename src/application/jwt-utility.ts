@@ -9,7 +9,7 @@ export const jwtUtility = {
    * @return Returns JWT-token
    */
   async createJWT(user: UserDBType) {
-    const payload = { userId: user._id }
+    const payload = { userId: user.id }
     const secretOrPrivateKey = settings.JWT_SECRET;
     const options: SignOptions = {
       expiresIn: '1d',
