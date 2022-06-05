@@ -10,8 +10,8 @@ export const postsRepository = {
   getPostsCount: async (count: PostItemType) => {
     return await postsCollection.count(count);
   },
-  getPostById: async (id: ObjectId): Promise<PostItemDBType | null> => {
-    let foundPost = await postsCollection.findOne({ _id: id });
+  getPostById: async (id: string): Promise<PostItemDBType | null> => {
+    let foundPost = await postsCollection.findOne({ id });
 
     if (foundPost) {
       return foundPost
@@ -19,7 +19,7 @@ export const postsRepository = {
       return null;
     }
   },
-  getPostByBloggerId: async (id: ObjectId, skip: number, limit: number): Promise<PostItemDBType[] | null> => {
+  getPostByBloggerId: async (id: string, skip: number, limit: number): Promise<PostItemDBType[] | null> => {
     let foundPost = await postsCollection.find({ bloggerId: id }).skip(skip).limit(limit).toArray();
 
     if (foundPost) {
@@ -33,12 +33,12 @@ export const postsRepository = {
     await postsCollection.insertOne(newPost);
     return newPost as PostItemDBType;
   },
-  updatePost: async (id: ObjectId, updatedPost: PostItemType): Promise<boolean> => {
-    const result = await postsCollection.updateOne({ _id: id }, { $set: updatedPost });
+  updatePost: async (id: string, updatedPost: PostItemType): Promise<boolean> => {
+    const result = await postsCollection.updateOne({ id }, { $set: updatedPost });
     return result.matchedCount === 1
   },
-  deletePost: async (id: ObjectId): Promise<boolean> => {
-    const result = await postsCollection.deleteOne({ _id: id });
+  deletePost: async (id: string): Promise<boolean> => {
+    const result = await postsCollection.deleteOne({ id });
     return result.deletedCount === 1
   }
 }

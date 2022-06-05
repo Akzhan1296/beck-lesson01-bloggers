@@ -34,28 +34,31 @@ export const bloggersService = {
       pageSize: ps,
       totalCount,
       pagesCount,
-      items: bloggers.map(({_id, ...rest}) => ({id: _id, ...rest})),
+      items: bloggers,
     }
   },
-  getBloggerById: async (id: ObjectId): Promise<BloggerItemDBType | null> => {
+  getBloggerById: async (id: string): Promise<BloggerItemDBType | null> => {
     return bloggersRepository.getBloggerById(id);
   },
   createBlogger: async (name: string, youtubeUrl: string): Promise<BloggerItemDBType> => {
     const newBlogger = {
+      id: new ObjectId().toString(),
       name,
       youtubeUrl,
     }
-    const createdBlogger = await bloggersRepository.createBlogger(newBlogger)
+    const createdBlogger = await bloggersRepository.createBlogger(newBlogger);
+    console.log(createdBlogger)
     return createdBlogger;
   },
-  updateBlogger: async (id: ObjectId, name: string, youtubeUrl: string): Promise<boolean> => {
+  updateBlogger: async (id: string, name: string, youtubeUrl: string): Promise<boolean> => {
     const updatedBlogger = {
+      id,
       name,
       youtubeUrl,
     }
     return await bloggersRepository.updateBlogger(id, updatedBlogger);
   },
-  deleteBlogger: async (id: ObjectId): Promise<boolean> => {
+  deleteBlogger: async (id: string): Promise<boolean> => {
     return await bloggersRepository.deleteBlogger(id);
   },
 }

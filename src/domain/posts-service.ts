@@ -25,13 +25,13 @@ export const postsService = {
       pageSize: ps,
       totalCount,
       pagesCount,
-      items: posts.map(p => transferIdToString(p)),
+      items: posts,
     }
   },
-  getPostById: async (id: ObjectId): Promise<PostItemDBType | null> => {
+  getPostById: async (id: string): Promise<PostItemDBType | null> => {
     return postsRepository.getPostById(id);
   },
-  getPostByBloggerId: async (id: ObjectId, pageNumber: QueryType, pageSize: QueryType) => {
+  getPostByBloggerId: async (id: string, pageNumber: QueryType, pageSize: QueryType) => {
 
     let pn = 1;
     let ps = 10;
@@ -55,8 +55,9 @@ export const postsService = {
       items: postsByBlogger && postsByBlogger.map(p => transferIdToString(p)),
     }
   },
-  createPost: async (title: string, shortDescription: string, content: string, bloggerId: ObjectId) => {
+  createPost: async (title: string, shortDescription: string, content: string, bloggerId: string) => {
     const newPost = {
+      id: new ObjectId().toString(),
       title,
       shortDescription,
       content,
@@ -66,7 +67,7 @@ export const postsService = {
     const createdPost = await postsRepository.createPost(newPost);
     return createdPost;
   },
-  updatePost: async (id: ObjectId, title: string, shortDescription: string, content: string, bloggerId: ObjectId) => {
+  updatePost: async (id: string, title: string, shortDescription: string, content: string, bloggerId: string) => {
     const updatedPost = {
       id,
       title,
@@ -78,7 +79,7 @@ export const postsService = {
     const result = await postsRepository.updatePost(id, updatedPost);
     return result;
   },
-  deletePost: async (id: ObjectId) => {
+  deletePost: async (id: string) => {
     return await postsRepository.deletePost(id);
   }
 }

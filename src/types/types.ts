@@ -3,16 +3,18 @@ import { ObjectId, WithId } from "mongodb"
 export type QueryType = string | string[] | undefined
 
 export type PostItemType = {
+  id: string,
   title: string,
   shortDescription: string,
   content: string,
-  bloggerId: ObjectId,
+  bloggerId: string,
   bloggerName: string
 };
 
 export type PostItemDBType = WithId<PostItemType>;
 
 export type BloggerItemType = {
+  id: string,
   name: string
   youtubeUrl: string
 }

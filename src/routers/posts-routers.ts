@@ -24,7 +24,7 @@ postsRouter.get('/', async (req, res) => {
 
 //get POST by id
 postsRouter.get('/:id', async (req, res) => {
-  const id = new ObjectId(req.params.id);
+  const id = req.params.id;
   let foundPost = await postsService.getPostById(id);
 
   if (foundPost) {
@@ -40,7 +40,6 @@ postsRouter.post('/',
   hasBloggerMiddleware,
   inputValidators.titleValidate,
   inputValidators.content,
-  inputValidators.bloggerId,
   inputValidators.shortDescription,
   sumErrorsMiddleware,
   async (req: Request, res: Response) => {
@@ -61,11 +60,10 @@ postsRouter.put('/:id',
   hasBloggerMiddleware,
   inputValidators.titleValidate,
   inputValidators.content,
-  inputValidators.bloggerId,
   inputValidators.shortDescription,
   sumErrorsMiddleware,
   async (req: Request, res: Response) => {
-    const id = new ObjectId(req.params.id);
+    const id = req.params.id;
     const title = req.body.title;
     const shortDescription = req.body.shortDescription;
     const content = req.body.content;
@@ -84,7 +82,7 @@ postsRouter.put('/:id',
 postsRouter.delete('/:id',
   authMiddleWare,
   async (req: Request, res: Response) => {
-    const id = new ObjectId(req.params.id);
+    const id = req.params.id;
     const isDeleted = await postsService.deletePost(id);
     if (isDeleted) {
       return res.send(204)
@@ -99,7 +97,7 @@ postsRouter.post('/:postId/comments',
   inputValidators.comments,
   sumErrorsMiddleware,
   async (req: Request, res: Response) => {
-    const postId = new ObjectId(req.params.postId);
+    const postId = req.params.postId;
     const comment = req.body.content;
     const user = req.user;
 
@@ -118,7 +116,7 @@ postsRouter.post('/:postId/comments',
 // get selected post comments
 postsRouter.get('/:postId/comments',
   async (req: Request, res: Response) => {
-    const postId = new ObjectId(req.params.postId);
+    const postId = req.params.postId;
     const pageNumber = Number(req.query.PageNumber) || 1;
     const pageSize = Number(req.query.PageSize) || 10;
 

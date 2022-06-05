@@ -5,7 +5,7 @@ import { usersService } from "../domain/users-service";
 export const authMiddleWare = (req: Request, res: Response, next: NextFunction) => {
   if (req.headers.authorization) {
     // const decoded = Buffer.from(req.headers.authorization.split(" ")[1], 'base64').toString();
-    const auth = req.headers.authorization;
+    const auth = req.headers.authorization.split(" ")[1];
     console.log(auth);
     const authName = 'Basic'
 
@@ -18,8 +18,6 @@ export const authMiddleWare = (req: Request, res: Response, next: NextFunction) 
     if ('YWRtaW46cXdlcnR5' === auth) {
       return next();
     }
-
-
   }
   return res.status(401).send();
 };

@@ -8,7 +8,6 @@ export const inputValidators = {
   titleValidate: body('title').trim().notEmpty().isLength({ max: 15 }),
   shortDescription: body('shortDescription').trim().notEmpty().isLength({ max: 100 }),
   content: body('content').trim().notEmpty().isLength({ max: 1000 }),
-  bloggerId: body('bloggerId').notEmpty().matches('/[0-9A-Fa-f]{6}/g'),
   name: body('name').trim().notEmpty().isLength({ max: 15 }),
   youtubeUrl: body('youtubeUrl').trim().notEmpty().isLength({ max: 100 }).matches('^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$'),
   login: body('login').notEmpty().isLength({ min: 3, max: 10 }),
@@ -17,6 +16,8 @@ export const inputValidators = {
 };
 
 export const sumErrorsMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  
+  
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
@@ -31,7 +32,7 @@ export const sumErrorsMiddleware = (req: Request, res: Response, next: NextFunct
 }
 
 export const hasBloggerMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-  const bloggerId = new ObjectId(req.body.bloggerId);
+  const bloggerId = req.body.bloggerId;
   const bloggers = await bloggersRepository.getBloggerById(bloggerId);
 
   if (!bloggers) {
