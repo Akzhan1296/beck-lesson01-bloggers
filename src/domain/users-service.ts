@@ -30,3 +30,5 @@ export const usersService = {
     return usersRepository.deleteUser(id);
   }
 };
+
+console.log(132);
