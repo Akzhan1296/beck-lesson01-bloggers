@@ -4,10 +4,12 @@ import { transferIdToString } from "../application/utils";
 import { usersService } from "../domain/users-service";
 import { authMiddleWare } from "../middlewares/auth-middleware";
 import { inputValidators, sumErrorsMiddleware } from "../middlewares/input-validator-middleware";
+import { requestsSaverMiddleware } from "../middlewares/request-test";
 
 export const usersRouter = Router({});
 
 // get all users
+usersRouter.use(requestsSaverMiddleware);
 usersRouter.get('/', async (req: Request, res: Response) => {
   const pageNumber = Number(req.query.PageNumber) || 1;
   const pageSize = Number(req.query.PageSize) || 10;
