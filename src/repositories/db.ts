@@ -3,10 +3,10 @@ import { settings } from '../settings';
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const client = new MongoClient(settings.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
-export const postsCollection = client.db('dataBase').collection('posts');
-export const bloggersCollection = client.db('dataBase').collection('bloggers');
-export const usersCollection = client.db('dataBase').collection('users');
-export const commentsCollection = client.db('dataBase').collection('comments');
+export const postsCollection = client.db('dataBase2').collection('posts');
+export const bloggersCollection = client.db('dataBase2').collection('bloggers');
+export const usersCollection = client.db('dataBase2').collection('users');
+export const commentsCollection = client.db('dataBase2').collection('comments');
 
 export async function runDb() {
   client.connect(async (err: any) => {

@@ -28,7 +28,7 @@ export const bloggersService = {
 
     const bloggers = await bloggersRepository.getBloggers(skip, ps, filter);
     const totalCount = await bloggersRepository.getBloggersCount(filter);
-    const pagesCount = Math.ceil(totalCount / ps)
+    const pagesCount = Math.ceil(totalCount / ps);
     return {
       page: pn,
       pageSize: ps,
@@ -47,7 +47,6 @@ export const bloggersService = {
       youtubeUrl,
     }
     const createdBlogger = await bloggersRepository.createBlogger(newBlogger);
-    console.log(createdBlogger)
     return createdBlogger;
   },
   updateBlogger: async (id: string, name: string, youtubeUrl: string): Promise<boolean> => {

@@ -5,7 +5,7 @@ import { ObjectId } from "mongodb";
 
 export const postsRepository = {
   getPosts: async (skip: number, limit: number): Promise<PostItemDBType[]> => {
-    return await postsCollection.find({}).skip(skip).limit(limit).toArray();
+    return await postsCollection.find({}, { projection: { _id: 0 } }).skip(skip).limit(limit).toArray();
   },
   getPostsCount: async (count: PostItemType) => {
     return await postsCollection.count(count);
@@ -20,7 +20,7 @@ export const postsRepository = {
     }
   },
   getPostByBloggerId: async (id: string, skip: number, limit: number): Promise<PostItemDBType[] | null> => {
-    let foundPost = await postsCollection.find({ bloggerId: id }).skip(skip).limit(limit).toArray();
+    let foundPost = await postsCollection.find({ bloggerId: id }, { projection: { _id: 0 } }).skip(skip).limit(limit).toArray();
 
     if (foundPost) {
 
