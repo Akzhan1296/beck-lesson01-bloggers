@@ -25,7 +25,7 @@ export const bloggersService = {
 
     const skip = (pn - 1) * ps;
 
-    const posts = await bloggersRepository.getBloggers(skip, ps, filter);
+    const bloggers = await bloggersRepository.getBloggers(skip, ps, filter);
     const totalCount = await bloggersRepository.getBloggersCount(filter);
     const pagesCount = Math.ceil(totalCount / ps)
     return {
@@ -33,7 +33,7 @@ export const bloggersService = {
       pageSize: ps,
       totalCount,
       pagesCount,
-      items: posts,
+      items: bloggers.map(({ id, ...rest }) => ({ id: id.toString(), ...rest })),
     }
   },
   getBloggerById: async (id: number): Promise<BloggerItemType | null> => {

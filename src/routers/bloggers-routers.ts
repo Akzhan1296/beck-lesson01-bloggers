@@ -24,7 +24,8 @@ bloggersRouter.get('/:id', async (req, res) => {
   let foundBlogger = await bloggersService.getBloggerById(id)
 
   if (foundBlogger) {
-    return res.status(200).send(foundBlogger);
+    const {id, ...rest} = foundBlogger;
+    return res.status(200).send({id: id.toString(), ...rest});
   } else {
     return res.status(404).send();
   }
