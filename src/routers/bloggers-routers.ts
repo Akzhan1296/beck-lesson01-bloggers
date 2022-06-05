@@ -6,6 +6,7 @@ import { authMiddleWare } from "../middlewares/auth-middleware";
 import { QueryType } from '../types/types';
 import { ObjectId } from "mongodb";
 import { transferIdToString } from "../application/utils";
+import { requestsSaverMiddleware } from "../middlewares/request-test";
 
 export const bloggersRouter = Router({});
 
@@ -35,6 +36,7 @@ bloggersRouter.get('/:id', async (req, res) => {
 
 //get specific blogger POSTS
 bloggersRouter.get('/:bloggerId/posts',
+  requestsSaverMiddleware,
   async (req, res) => {
   const bloggerId = req.params.bloggerId
   const pageNumber = req.query.PageNumber as QueryType;
