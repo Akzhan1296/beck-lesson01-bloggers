@@ -27,7 +27,7 @@ app.use(bodyParser.json());
 // app.use(countRequestsMiddleWare);
 // app.use(checkContentTypeMiddleWare('application/json'))
 
-app.use('/', authRouter);
+app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 app.use('/bloggers', bloggersRouter);
 app.use('/posts', postsRouter);
