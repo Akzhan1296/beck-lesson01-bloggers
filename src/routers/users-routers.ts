@@ -47,3 +47,4 @@ usersRouter.delete('/:id', authMiddleWare, async (req: Request, res: Response) =
     return res.send(404);
   }
 });
+
