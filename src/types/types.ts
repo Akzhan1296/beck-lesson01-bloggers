@@ -2,7 +2,7 @@ import { ObjectId, WithId } from "mongodb"
 
 export type QueryType = string | string[] | undefined
 
-interface PostItemType {
+export type PostItemType = {
   id: string,
   title: string,
   shortDescription: string,
@@ -10,8 +10,6 @@ interface PostItemType {
   bloggerId: string,
   bloggerName: string
 };
-
-
 
 export type PostItemDBType = WithId<PostItemType>;
 

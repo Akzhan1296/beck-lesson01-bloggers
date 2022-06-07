@@ -6,7 +6,7 @@ import {
   sumErrorsMiddleware
 } from '../middlewares/input-validator-middleware';
 import { authMiddleWare, userAuthMiddleware } from "../middlewares/auth-middleware";
-import { CommentWithPostId, PostItemTypeWithId, QueryType } from '../types/types';
+import { CommentWithPostId, QueryType } from '../types/types';
 import { commentsService } from "../domain/comments-service";
 import { ObjectId } from "mongodb";
 import { transferIdToString } from "../application/utils";
