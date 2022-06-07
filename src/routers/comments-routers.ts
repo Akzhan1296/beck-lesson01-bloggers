@@ -8,7 +8,6 @@ import { inputValidators, sumErrorsMiddleware } from "../middlewares/input-valid
 export const commentsRouter = Router({});
 
 commentsRouter.get('/:id',
-  userAuthMiddleware,
   async (req: Request, res: Response) => {
     const commentId = new ObjectId(req.params.id);
     let foundComment = await commentsService.getCommentById(commentId);
