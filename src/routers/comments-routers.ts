@@ -26,26 +26,31 @@ commentsRouter.put('/:id', userAuthMiddleware,
   sumErrorsMiddleware,
   async (req: Request, res: Response) => {
 
-    const user = req.user;
-    const commentId = new ObjectId(req.params.id);
-    const content = req.body.content;
+    try {
+      const user = req.user;
+      const commentId = new ObjectId(req.params.id);
+      const content = req.body.content;
 
-    let foundComment = await commentsService.getCommentById(commentId);
+      let foundComment = await commentsService.getCommentById(commentId);
 
-    if (!foundComment) {
+      if (!foundComment) {
+        return res.status(404).send();
+      }
+
+      if (foundComment && user && !foundComment.userId.equals(user._id)) {
+        return res.status(403).send();
+      }
+
+      if (foundComment) {
+        const isUpdated = await commentsService.updateComment(commentId, content, user.login, user._id);
+        if (isUpdated) {
+          return res.status(204).send();
+        }
+      }
+    } catch (err) {
       return res.status(404).send();
     }
 
-    if (foundComment && user && !foundComment.userId.equals(user._id)) {
-      return res.status(403).send();
-    }
-
-    if (foundComment) {
-      const isUpdated = await commentsService.updateComment(commentId, content, user.login, user._id);
-      if (isUpdated) {
-        return res.status(204).send();
-      }
-    }
   });
 
 commentsRouter.delete('/:id', userAuthMiddleware, async (req: Request, res: Response) => {
@@ -54,23 +59,23 @@ commentsRouter.delete('/:id', userAuthMiddleware, async (req: Request, res: Resp
     const user = req.user;
     const commentId = new ObjectId(req.params.id);
     let foundComment = await commentsService.getCommentById(commentId);
-  
+
     if (!foundComment) {
       return res.status(404).send();
     }
-  
+
     if (foundComment && user && !foundComment.userId.equals(user._id)) {
       return res.status(403).send();
     }
-  
+
     if (foundComment) {
       const isDeleted = await commentsService.deleteComment(commentId);
       if (isDeleted) {
         return res.status(204).send();
       }
     }
-  } catch (err){
+  } catch (err) {
     return res.status(404).send();
   }
-  
+
 });
