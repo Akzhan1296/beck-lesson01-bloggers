@@ -22,7 +22,7 @@ export const commentsService = {
   getAllCountCommentsByPostId: async(postId: string) => {
     return await commentsRepository.getAllCountCommentsByPostId(postId);
   },
-  getCommentById: async (id: ObjectId): Promise<CommentDBType | null> => {
+  getCommentById: async (id: ObjectId) => {
     return await commentsRepository.getCommentById(id);
   },
   deleteComment: async (id: ObjectId): Promise<boolean> => {

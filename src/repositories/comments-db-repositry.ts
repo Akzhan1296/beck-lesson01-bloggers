@@ -13,7 +13,7 @@ export const commentsRepository = {
   getAllPostsCount: async () => {
     return await commentsCollection.count();
   },
-  getCommentById: async (id: ObjectId): Promise<CommentDBType | null> => {
+  getCommentById: async (id: ObjectId): Promise<CommentWithPostId | null> => {
     let foundComment = await commentsCollection.findOne({ _id: id });
 
     if (foundComment) {

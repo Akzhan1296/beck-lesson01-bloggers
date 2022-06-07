@@ -13,7 +13,8 @@ commentsRouter.get('/:id',
     let foundComment = await commentsService.getCommentById(commentId);
 
     if (foundComment) {
-      return res.status(200).send(transferIdToString(foundComment));
+      const {postId, ...rest} = foundComment;
+      return res.status(200).send(transferIdToString(rest));
     } else {
       return res.status(404).send();
     }
