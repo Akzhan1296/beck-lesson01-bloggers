@@ -50,23 +50,27 @@ commentsRouter.put('/:id', userAuthMiddleware,
 
 commentsRouter.delete('/:id', userAuthMiddleware, async (req: Request, res: Response) => {
 
-  const user = req.user;
-  const commentId = new ObjectId(req.params.id);
-
-  let foundComment = await commentsService.getCommentById(commentId);
-
-  if (!foundComment) {
+  try {
+    const user = req.user;
+    const commentId = new ObjectId(req.params.id);
+    let foundComment = await commentsService.getCommentById(commentId);
+  
+    if (!foundComment) {
+      return res.status(404).send();
+    }
+  
+    if (foundComment && user && !foundComment.userId.equals(user._id)) {
+      return res.status(403).send();
+    }
+  
+    if (foundComment) {
+      const isDeleted = await commentsService.deleteComment(commentId);
+      if (isDeleted) {
+        return res.status(204).send();
+      }
+    }
+  } catch (err){
     return res.status(404).send();
   }
-
-  if (foundComment && user && !foundComment.userId.equals(user._id)) {
-    return res.status(403).send();
-  }
-
-  if (foundComment) {
-    const isDeleted = await commentsService.deleteComment(commentId);
-    if (isDeleted) {
-      return res.status(204).send();
-    }
-  }
+  
 });
