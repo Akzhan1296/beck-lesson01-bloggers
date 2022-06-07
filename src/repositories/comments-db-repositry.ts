@@ -7,8 +7,8 @@ export const commentsRepository = {
     await commentsCollection.insertOne(comment);
     return comment as CommentDBType;
   },
-  getAllPosts: async (skip: number, limit: number): Promise<CommentDBType[]> => {
-    return await commentsCollection.find().skip(skip).limit(limit).toArray();
+  getAllComments: async (postId: string, skip: number, limit: number): Promise<CommentDBType[]> => {
+    return await commentsCollection.find({ postId }).skip(skip).limit(limit).toArray();
   },
   getAllPostsCount: async () => {
     return await commentsCollection.count();
@@ -26,8 +26,11 @@ export const commentsRepository = {
     const result = await commentsCollection.deleteOne({ _id: id });
     return result.deletedCount === 1
   },
-  updateComment: async (id: ObjectId, comment: CommentType): Promise<boolean> => {
-    const result = await commentsCollection.updateOne({ _id: id}, { $set: comment });
+  updateComment: async (id: ObjectId, comment: any): Promise<boolean> => {
+    const result = await commentsCollection.updateOne({ _id: id }, { $set: comment });
     return result.matchedCount === 1
+  },
+  getAllCountCommentsByPostId: async (postId: string) => {
+    return await commentsCollection.count({ postId });
   }
 };

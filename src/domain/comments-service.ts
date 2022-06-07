@@ -3,20 +3,24 @@ import { commentsRepository } from "../repositories/comments-db-repositry";
 import { CommentDBType, CommentType } from "../types/types";
 
 export const commentsService = {
-  createCommentForSelectedPost: async (content: string, userLogin: string, userId: ObjectId) => {
+  createCommentForSelectedPost: async (content: string, userLogin: string, userId: ObjectId, postId: string) => {
     const newComment = {
       content,
       userLogin,
       userId,
+      postId,
       addedAt: new Date(),
     }
     return commentsRepository.createCommentForSelectedPost(newComment);
   },
-  getAllPosts: async (skip: number, limit: number): Promise<CommentDBType[]> => {
-    return await commentsRepository.getAllPosts(skip, limit);
+  getAllCommentsByPostId: async (postId: string, skip: number, limit: number): Promise<CommentDBType[]> => {
+    return await commentsRepository.getAllComments(postId, skip, limit);
   },
   getAllPostsCount: async () => {
     return await commentsRepository.getAllPostsCount();
+  },
+  getAllCountCommentsByPostId: async(postId: string) => {
+    return await commentsRepository.getAllCountCommentsByPostId(postId);
   },
   getCommentById: async (id: ObjectId): Promise<CommentDBType | null> => {
     return await commentsRepository.getCommentById(id);
@@ -30,9 +34,7 @@ export const commentsService = {
       content,
       userLogin,
       userId,
-      addedAt: new Date(),
     }
-
 
     return await commentsRepository.updateComment(id, updatedComment);
   }

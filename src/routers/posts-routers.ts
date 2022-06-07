@@ -108,10 +108,7 @@ postsRouter.post('/:postId/comments',
     let foundPost = await postsService.getPostById(postId);
 
     if (foundPost) {
-      const newComment = await commentsService.createCommentForSelectedPost(comment, user.login, user._id);
-
-      console.log(newComment);
-
+      const newComment = await commentsService.createCommentForSelectedPost(comment, user.login, user._id, postId);
       return res.status(201).send(transferIdToString(newComment));
     }
 
@@ -128,8 +125,8 @@ postsRouter.get('/:postId/comments',
 
     const skip = (pageNumber - 1) * pageSize;
 
-    const posts = await commentsService.getAllPosts(skip, pageSize);
-    const totalCount = await commentsService.getAllPostsCount();
+    const comments = await commentsService.getAllCommentsByPostId(postId, skip, pageSize);
+    const totalCount = await commentsService.getAllCountCommentsByPostId(postId);
     const pagesCount = Math.ceil(totalCount / pageSize);
 
     let foundPost = await postsService.getPostById(postId);
@@ -143,7 +140,7 @@ postsRouter.get('/:postId/comments',
       pageSize: pageSize,
       totalCount,
       pagesCount,
-      items: posts.map(p => transferIdToString(p))
+      items: comments.map(p => transferIdToString(p))
     })
   }
 )
