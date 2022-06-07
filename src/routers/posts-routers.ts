@@ -6,10 +6,11 @@ import {
   sumErrorsMiddleware
 } from '../middlewares/input-validator-middleware';
 import { authMiddleWare, userAuthMiddleware } from "../middlewares/auth-middleware";
-import { QueryType } from '../types/types';
+import { CommentWithPostId, PostItemTypeWithId, QueryType } from '../types/types';
 import { commentsService } from "../domain/comments-service";
 import { ObjectId } from "mongodb";
 import { transferIdToString } from "../application/utils";
+
 
 export const postsRouter = Router({});
 
@@ -101,15 +102,16 @@ postsRouter.post('/:postId/comments',
   inputValidators.comments,
   sumErrorsMiddleware,
   async (req: Request, res: Response) => {
-    const postId = req.params.postId;
+    const postIdByParams = req.params.postId;
     const comment = req.body.content;
     const user = req.user;
 
-    let foundPost = await postsService.getPostById(postId);
+    let foundPost = await postsService.getPostById(postIdByParams);
 
     if (foundPost) {
-      const newComment = await commentsService.createCommentForSelectedPost(comment, user.login, user._id, postId);
-      return res.status(201).send(transferIdToString(newComment));
+      const newComment: CommentWithPostId = await commentsService.createCommentForSelectedPost(comment, user.login, user._id, postIdByParams);
+      const {postId, ...rest} = newComment;
+      return res.status(201).send(transferIdToString(rest));
     }
 
     return res.status(404).send();
@@ -135,12 +137,13 @@ postsRouter.get('/:postId/comments',
       return res.status(404).send();
     }
 
+
     return res.status(200).send({
       page: pageNumber,
       pageSize: pageSize,
       totalCount,
       pagesCount,
-      items: comments.map(p => transferIdToString(p))
+      items: comments.map(({postId, ...rest}) => transferIdToString(rest))
     })
   }
 )

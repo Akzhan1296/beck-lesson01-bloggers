@@ -2,7 +2,7 @@ import { ObjectId, WithId } from "mongodb"
 
 export type QueryType = string | string[] | undefined
 
-export type PostItemType = {
+interface PostItemType {
   id: string,
   title: string,
   shortDescription: string,
@@ -10,6 +10,8 @@ export type PostItemType = {
   bloggerId: string,
   bloggerName: string
 };
+
+
 
 export type PostItemDBType = WithId<PostItemType>;
 
@@ -39,3 +41,11 @@ export type CommentType = {
 }
 
 export type CommentDBType = WithId<CommentType>
+
+export type CommentWithPostId = WithId<{
+  userId: ObjectId,
+  userLogin: string,
+  content: string,
+  addedAt: Date,
+  postId: string
+}>;

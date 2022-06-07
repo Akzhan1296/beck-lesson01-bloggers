@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { commentsRepository } from "../repositories/comments-db-repositry";
-import { CommentDBType, CommentType } from "../types/types";
+import { CommentDBType  } from "../types/types";
 
 export const commentsService = {
   createCommentForSelectedPost: async (content: string, userLogin: string, userId: ObjectId, postId: string) => {
@@ -13,7 +13,7 @@ export const commentsService = {
     }
     return commentsRepository.createCommentForSelectedPost(newComment);
   },
-  getAllCommentsByPostId: async (postId: string, skip: number, limit: number): Promise<CommentDBType[]> => {
+  getAllCommentsByPostId: async (postId: string, skip: number, limit: number) => {
     return await commentsRepository.getAllComments(postId, skip, limit);
   },
   getAllPostsCount: async () => {

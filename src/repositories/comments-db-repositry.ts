@@ -1,13 +1,13 @@
 import { ObjectId } from "mongodb";
-import { CommentDBType, CommentType } from "../types/types";
+import { CommentDBType, CommentType, CommentWithPostId } from "../types/types";
 import { commentsCollection } from "./db";
 
 export const commentsRepository = {
-  createCommentForSelectedPost: async (comment: CommentType): Promise<CommentDBType> => {
+  createCommentForSelectedPost: async (comment: CommentType): Promise<CommentWithPostId> => {
     await commentsCollection.insertOne(comment);
-    return comment as CommentDBType;
+    return comment as CommentWithPostId;
   },
-  getAllComments: async (postId: string, skip: number, limit: number): Promise<CommentDBType[]> => {
+  getAllComments: async (postId: string, skip: number, limit: number): Promise<CommentWithPostId[]> => {
     return await commentsCollection.find({ postId }).skip(skip).limit(limit).toArray();
   },
   getAllPostsCount: async () => {
